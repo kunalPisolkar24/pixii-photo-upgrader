@@ -17,7 +17,7 @@ export function PromptForm({ value, onChange, onSubmit, isGenerating }: PromptFo
     <form 
       onSubmit={onSubmit}
       className={cn(
-        "w-full max-w-2xl bg-white rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant/20 flex items-center p-2 pl-3 gap-2 pointer-events-auto transition-all duration-300",
+        "w-full max-w-2xl bg-card rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant/20 flex items-center p-2 pl-3 gap-2 pointer-events-auto transition-all duration-300",
         isGenerating && "opacity-70 grayscale-[0.5]"
       )}
     >
