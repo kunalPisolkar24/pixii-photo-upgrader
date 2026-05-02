@@ -59,7 +59,7 @@ export function HistoryDrawer({ open, onOpenChange }: HistoryDrawerProps) {
                 </div>
               ) : filteredHistory.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-muted-foreground/40">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground/50">
                     <SearchX className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">

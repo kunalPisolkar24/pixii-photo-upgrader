@@ -17,7 +17,7 @@ export function HistorySearch({ value, onChange }: HistorySearchProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Search your previous prompts..." 
-          className="pl-9 bg-surface-container-low border-none rounded-xl h-11"
+          className="pl-9 bg-muted border-none rounded-xl h-11"
         />
       </div>
     </div>

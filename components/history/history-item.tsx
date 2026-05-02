@@ -24,7 +24,7 @@ export function HistoryItem({ prompt, images }: HistoryItemProps) {
         {images.map((img, idx) => (
           <div 
             key={idx} 
-            className="aspect-square rounded-lg bg-surface-container overflow-hidden border border-outline-variant/10"
+            className="aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
           >
             <img src={img} alt="" className="w-full h-full object-cover" />
           </div>
