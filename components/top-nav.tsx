@@ -9,7 +9,7 @@ interface TopNavProps {
 
 export function TopNav({ onHistoryClick }: TopNavProps) {
   return (
-    <nav className="flex items-center justify-between px-container py-4 bg-background/80 backdrop-blur-md border-b sticky top-0 z-40">
+    <nav className="flex items-center justify-between px-container py-4 bg-background/80 backdrop-blur-md sticky top-0 z-40">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
           <Aperture className="w-5 h-5" />
