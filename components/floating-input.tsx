@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Paperclip, Send, ImageIcon } from "lucide-react"
+import { Paperclip, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useGenerationStore } from "@/store/use-generation-store"
@@ -54,10 +54,6 @@ export function FloatingInput() {
         >
           <Paperclip className="w-5 h-5" />
         </Button>
-        
-        <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-foreground shrink-0">
-          <ImageIcon className="w-5 h-5" />
-        </div>
 
         <Input 
           value={prompt}
