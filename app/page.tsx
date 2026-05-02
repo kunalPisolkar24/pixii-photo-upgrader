@@ -1,19 +1,28 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
+import { useState } from "react"
+import { TopNav } from "@/components/top-nav"
+import { HistoryDrawer } from "@/components/history-drawer"
+import { ImageGrid } from "@/components/image-grid"
+import { FloatingInput } from "@/components/floating-input"
 
 export default function Page() {
+  const [historyOpen, setHistoryOpen] = useState(false)
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary/10 selection:text-primary overflow-x-hidden">
+      <TopNav onHistoryClick={() => setHistoryOpen(true)} />
+      
+      <main className="flex-1 flex flex-col pt-12 pb-56">
+        <ImageGrid />
+      </main>
+
+      <FloatingInput />
+      
+      <HistoryDrawer 
+        open={historyOpen} 
+        onOpenChange={setHistoryOpen} 
+      />
     </div>
   )
 }
