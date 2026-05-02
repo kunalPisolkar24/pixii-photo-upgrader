@@ -51,6 +51,7 @@ export const useGenerationStore = create<GenerationState>()(
     }),
     {
       name: 'pixii-generation-storage',
+      partialize: (state) => ({ history: state.history }),
     }
   )
 );
