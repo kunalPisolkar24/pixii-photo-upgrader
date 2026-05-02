@@ -6,10 +6,8 @@ import { SkeletonState } from "./skeleton-state"
 import { ImageCard } from "./image-card"
 
 export function ImageGrid() {
-  const { currentGenerations, isGenerating } = useGenerationStore((state: GenerationState) => ({
-    currentGenerations: state.currentGenerations,
-    isGenerating: state.isGenerating
-  }))
+  const currentGenerations = useGenerationStore((state: GenerationState) => state.currentGenerations)
+  const isGenerating = useGenerationStore((state: GenerationState) => state.isGenerating)
 
   if (isGenerating) {
     return <SkeletonState />
