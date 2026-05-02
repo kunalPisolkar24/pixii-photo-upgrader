@@ -17,7 +17,7 @@ export function SuggestionChips({ suggestions, onSelect, disabled }: SuggestionC
           variant="outline"
           size="sm"
           disabled={disabled}
-          className="rounded-full bg-card/80 backdrop-blur-sm border-outline-variant/30 text-muted-foreground text-xs hover:bg-card hover:text-foreground transition-all h-9 px-4 shadow-sm"
+          className="rounded-full bg-card/80 backdrop-blur-sm border-outline-variant/30 text-muted-foreground text-xs hover:bg-card hover:text-foreground transition-all h-9 px-4 shadow-sm disabled:opacity-100 disabled:cursor-not-allowed"
           onClick={() => onSelect(suggestion)}
         >
           {suggestion}
