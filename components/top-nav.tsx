@@ -1,6 +1,6 @@
 "use client"
 
-import { Sparkles, History, Download } from "lucide-react"
+import { Aperture, History, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface TopNavProps {
@@ -12,7 +12,7 @@ export function TopNav({ onHistoryClick }: TopNavProps) {
     <nav className="flex items-center justify-between px-container py-4 bg-background/80 backdrop-blur-md border-b sticky top-0 z-40">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-          <Sparkles className="w-5 h-5" />
+          <Aperture className="w-5 h-5" />
         </div>
         <span className="font-heading text-lg font-semibold tracking-tight text-foreground">
           Pixii <span className="text-muted-foreground font-normal">Studio</span>
