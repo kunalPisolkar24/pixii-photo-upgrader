@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface Generation {
+export interface Generation {
   id: string;
   prompt: string;
   images: string[];
   createdAt: string;
 }
 
-interface GenerationState {
+export interface GenerationState {
   isGenerating: boolean;
   currentGenerations: string[];
   history: Generation[];

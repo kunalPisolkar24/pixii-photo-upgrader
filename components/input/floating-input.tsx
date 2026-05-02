@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useGenerationStore } from "@/store/use-generation-store"
+import { useGenerationStore, type GenerationState } from "../../store/use-generation-store"
 import { SuggestionChips } from "./suggestion-chips"
 import { PromptForm } from "./prompt-form"
 
@@ -9,8 +9,8 @@ const SUGGESTIONS = ["Minimalist Studio", "Kitchen Counter", "Silk Sheets"]
 
 export function FloatingInput() {
   const [prompt, setPrompt] = useState("")
-  const generate = useGenerationStore((state) => state.generate)
-  const isGenerating = useGenerationStore((state) => state.isGenerating)
+  const generate = useGenerationStore((state: GenerationState) => state.generate)
+  const isGenerating = useGenerationStore((state: GenerationState) => state.isGenerating)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

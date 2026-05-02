@@ -1,12 +1,15 @@
 "use client"
 
-import { useGenerationStore } from "@/store/use-generation-store"
+import { useGenerationStore, type GenerationState } from "../../store/use-generation-store"
 import { EmptyState } from "./empty-state"
 import { SkeletonState } from "./skeleton-state"
 import { ImageCard } from "./image-card"
 
 export function ImageGrid() {
-  const { currentGenerations, isGenerating } = useGenerationStore()
+  const { currentGenerations, isGenerating } = useGenerationStore((state: GenerationState) => ({
+    currentGenerations: state.currentGenerations,
+    isGenerating: state.isGenerating
+  }))
 
   if (isGenerating) {
     return <SkeletonState />

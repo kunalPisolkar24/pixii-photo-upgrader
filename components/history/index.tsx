@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { useGenerationStore } from "@/store/use-generation-store"
+import { useGenerationStore, type GenerationState } from "../../store/use-generation-store"
 import { HistorySearch } from "./history-search"
 import { HistoryItem } from "./history-item"
 
@@ -20,7 +20,7 @@ interface HistoryDrawerProps {
 }
 
 export function HistoryDrawer({ open, onOpenChange }: HistoryDrawerProps) {
-  const history = useGenerationStore((state) => state.history)
+  const history = useGenerationStore((state: GenerationState) => state.history)
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
