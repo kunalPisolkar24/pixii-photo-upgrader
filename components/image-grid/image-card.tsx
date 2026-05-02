@@ -11,7 +11,7 @@ export function ImageCard({ src, alt }: ImageCardProps) {
   return (
     <div 
       className={cn(
-        "aspect-square rounded-xl overflow-hidden bg-white border border-outline-variant/20 shadow-ambient transition-all duration-700 hover:shadow-lg hover:border-primary/20 group"
+        "aspect-square rounded-xl overflow-hidden bg-card border border-outline-variant/20 shadow-ambient transition-all duration-700 hover:shadow-lg hover:border-primary/20 group"
       )}
     >
       <img 
