@@ -24,8 +24,8 @@ export function HistoryDrawer({ open, onOpenChange }: HistoryDrawerProps) {
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto rounded-none border-l bg-white">
-        <div className="flex flex-col h-full">
+      <DrawerContent className="h-full w-full max-w-md ml-auto rounded-none border-l">
+        <div className="flex flex-col h-full overflow-hidden">
           <DrawerHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
             <DrawerTitle className="text-xl font-heading font-semibold tracking-tight">History</DrawerTitle>
             <DrawerClose asChild>
