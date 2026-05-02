@@ -10,7 +10,7 @@ export function SkeletonState() {
         {[1, 2, 3].map((i) => (
           <Skeleton key={i} className="aspect-square rounded-xl" />
         ))}
-        <div className="aspect-square rounded-xl bg-surface-container-low border border-outline-variant/10 flex flex-col items-center justify-center space-y-4 shadow-sm border-dashed">
+        <div className="aspect-square rounded-xl bg-muted/50 border border-outline-variant/10 flex flex-col items-center justify-center space-y-4 shadow-sm border-dashed">
           <div className="relative">
             <div className="w-12 h-12 rounded-full border-2 border-primary/10 border-t-primary animate-spin" />
             <Aperture className="w-5 h-5 text-primary absolute inset-0 m-auto" />

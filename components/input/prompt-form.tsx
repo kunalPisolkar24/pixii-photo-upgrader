@@ -25,7 +25,7 @@ export function PromptForm({ value, onChange, onSubmit, isGenerating }: PromptFo
         type="button" 
         variant="ghost" 
         size="icon" 
-        className="rounded-full text-muted-foreground hover:bg-surface-container h-10 w-10"
+        className="rounded-full text-muted-foreground hover:bg-muted h-10 w-10"
       >
         <Paperclip className="w-5 h-5" />
       </Button>
