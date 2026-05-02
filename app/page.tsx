@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { TopNav } from "@/components/top-nav"
-import { HistoryDrawer } from "@/components/history-drawer"
+import { HistoryDrawer } from "@/components/history"
 import { ImageGrid } from "@/components/image-grid"
-import { FloatingInput } from "@/components/floating-input"
+import { FloatingInput } from "@/components/input"
 
 export default function Page() {
   const [historyOpen, setHistoryOpen] = useState(false)
