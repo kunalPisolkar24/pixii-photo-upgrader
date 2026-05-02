@@ -15,7 +15,7 @@ export function HistoryItem({ prompt, images }: HistoryItemProps) {
         <p className="text-sm font-medium leading-tight text-foreground/90 line-clamp-2">
           {prompt}
         </p>
-        <Button variant="secondary" size="sm" className="h-8 gap-1.5 rounded-lg text-xs font-semibold shrink-0">
+        <Button size="sm" className="h-8 gap-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-semibold shrink-0 shadow-none">
           Download
           <Download className="w-3.5 h-3.5" />
         </Button>

@@ -37,7 +37,7 @@ export function HistoryDrawer({ open, onOpenChange }: HistoryDrawerProps) {
 
           <HistorySearch />
 
-          <ScrollArea className="flex-1 px-6">
+          <ScrollArea className="flex-1 min-h-0 px-6">
             <div className="space-y-8 pb-8">
               {history.map((item) => (
                 <HistoryItem key={item.id} prompt={item.prompt} images={item.images} />
