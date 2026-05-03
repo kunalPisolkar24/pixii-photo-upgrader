@@ -33,9 +33,15 @@ export function FloatingInput() {
     (state: GenerationState) => state.setOutputQuality
   )
 
+  const quotaRemaining = useGenerationStore((state) => state.quotaRemaining)
+  const isLocalhost = typeof window !== "undefined" && 
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  
+  const isQuotaExceeded = quotaRemaining <= 0 && !isLocalhost
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!prompt.trim() || isGenerating) return
+    if (!prompt.trim() || isGenerating || isQuotaExceeded) return
     const currentPrompt = prompt
     setPrompt("")
     await generate(currentPrompt)
@@ -47,17 +53,17 @@ export function FloatingInput() {
         <ImageCountSelector
           value={imageCount}
           onChange={setImageCount}
-          disabled={isGenerating}
+          disabled={isGenerating || isQuotaExceeded}
         />
         <OutputQualitySelector
           value={outputQuality}
           onChange={setOutputQuality}
-          disabled={isGenerating}
+          disabled={isGenerating || isQuotaExceeded}
         />
         <SuggestionChips
           suggestions={SUGGESTIONS}
           onSelect={setPrompt}
-          disabled={isGenerating}
+          disabled={isGenerating || isQuotaExceeded}
         />
       </div>
 
@@ -66,6 +72,7 @@ export function FloatingInput() {
         onChange={setPrompt}
         onSubmit={handleSubmit}
         isGenerating={isGenerating}
+        disabled={isQuotaExceeded}
       />
     </div>
   )

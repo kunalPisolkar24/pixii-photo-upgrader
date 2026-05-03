@@ -10,9 +10,16 @@ interface PromptFormProps {
   onChange: (value: string) => void
   onSubmit: (e: React.FormEvent) => void
   isGenerating: boolean
+  disabled?: boolean
 }
 
-export function PromptForm({ value, onChange, onSubmit, isGenerating }: PromptFormProps) {
+export function PromptForm({ 
+  value, 
+  onChange, 
+  onSubmit, 
+  isGenerating,
+  disabled 
+}: PromptFormProps) {
   return (
     <form 
       onSubmit={onSubmit}
@@ -32,8 +39,8 @@ export function PromptForm({ value, onChange, onSubmit, isGenerating }: PromptFo
       <Input 
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        disabled={isGenerating}
-        placeholder="Describe your custom background..." 
+        disabled={isGenerating || disabled}
+        placeholder={disabled ? "Quota exceeded for today" : "Describe your custom background..."} 
         className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base h-12 px-2 disabled:opacity-100 disabled:cursor-not-allowed"
       />
 
@@ -42,9 +49,9 @@ export function PromptForm({ value, onChange, onSubmit, isGenerating }: PromptFo
         size="icon" 
         className={cn(
           "rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 shrink-0 w-11 h-11 transition-all active:scale-95",
-          isGenerating && "disabled:opacity-100 disabled:cursor-not-allowed"
+          (isGenerating || disabled) && "disabled:opacity-100 disabled:cursor-not-allowed"
         )}
-        disabled={!value.trim() || isGenerating}
+        disabled={!value.trim() || isGenerating || disabled}
       >
         <Send className="w-5 h-5 text-white" />
       </Button>
