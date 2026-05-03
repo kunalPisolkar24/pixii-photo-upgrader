@@ -11,8 +11,9 @@ import { ImageCountSelector } from "./image-count-selector"
 import { OutputQualitySelector } from "./output-quality-selector"
 
 import { GenerateRequestSchema } from "@/lib/schemas"
+import { STYLE_PACKS } from "@/lib/style-packs"
 
-const SUGGESTIONS = ["Modern Minimal", "Cozy Lifestyle", "Premium Studio"]
+const SUGGESTIONS = Object.keys(STYLE_PACKS)
 
 export function FloatingInput() {
   const [prompt, setPrompt] = useState("")
@@ -49,6 +50,8 @@ export function FloatingInput() {
     const currentPrompt = prompt
     setPrompt("")
     await generate(currentPrompt)
+    setUploadedImage(null)
+    setSelectedStyle(null)
   }
 
   return (
