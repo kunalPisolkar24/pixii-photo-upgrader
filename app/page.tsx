@@ -1,19 +1,28 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
+import { useState } from "react"
+import { TopNav } from "@/components/top-nav"
+import { HistoryDrawer } from "@/components/history"
+import { ImageGrid } from "@/components/image-grid"
+import { FloatingInput } from "@/components/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function Page() {
+  const [historyOpen, setHistoryOpen] = useState(false)
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+    <div className="flex h-screen flex-col overflow-hidden bg-background selection:bg-primary/10 selection:text-primary">
+      <TopNav onHistoryClick={() => setHistoryOpen(true)} />
+
+      <ScrollArea className="min-h-0 flex-1 overflow-hidden">
+        <main className="flex min-h-full flex-col pb-[calc(11rem+env(safe-area-inset-bottom))] sm:pb-56">
+          <ImageGrid />
+        </main>
+      </ScrollArea>
+
+      <FloatingInput />
+
+      <HistoryDrawer open={historyOpen} onOpenChange={setHistoryOpen} />
     </div>
   )
 }
