@@ -4,7 +4,7 @@ import { Aperture } from "lucide-react"
 
 export function EmptyState() {
   return (
-    <div className="flex-1 flex items-center justify-center p-container">
+    <div className="flex min-h-[calc(100dvh-14rem)] flex-1 items-center justify-center p-container">
       <div className="max-w-md text-center space-y-4">
         <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto text-primary">
            <Aperture className="w-8 h-8" />
