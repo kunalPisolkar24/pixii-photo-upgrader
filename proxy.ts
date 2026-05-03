@@ -4,7 +4,8 @@ import { checkRateLimit } from "./lib/services/rate-limiter.service"
 
 export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api/generate")) {
-    const ip = request.ip ?? "127.0.0.1"
+    const forwarded = request.headers.get("x-forwarded-for")
+    const ip = forwarded ? forwarded.split(",")[0] : (request.headers.get("x-real-ip") ?? "127.0.0.1")
     const { success, limit, remaining, reset } = await checkRateLimit(ip)
 
     if (!success) {
