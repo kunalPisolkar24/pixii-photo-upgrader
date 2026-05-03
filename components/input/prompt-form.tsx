@@ -1,6 +1,7 @@
 "use client"
 
-import { Paperclip, Send } from "lucide-react"
+import { useRef } from "react"
+import { Paperclip, Send, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -10,6 +11,9 @@ interface PromptFormProps {
   onChange: (value: string) => void
   onSubmit: (e: React.FormEvent) => void
   isGenerating: boolean
+  uploadedImage: string | null
+  onImageUpload: (image: string | null) => void
+  isValid: boolean
   disabled?: boolean
 }
 
@@ -18,8 +22,24 @@ export function PromptForm({
   onChange, 
   onSubmit, 
   isGenerating,
+  uploadedImage,
+  onImageUpload,
+  isValid,
   disabled 
 }: PromptFormProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        onImageUpload(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
   return (
     <form 
       onSubmit={onSubmit}
@@ -27,14 +47,41 @@ export function PromptForm({
         "w-full max-w-2xl bg-card rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant/20 flex items-center p-2 pl-3 gap-2 pointer-events-auto transition-all duration-300"
       )}
     >
-      <Button 
-        type="button" 
-        variant="ghost" 
-        size="icon" 
-        className="rounded-full text-muted-foreground hover:bg-muted h-10 w-10"
-      >
-        <Paperclip className="w-5 h-5" />
-      </Button>
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+      
+      {uploadedImage ? (
+        <div className="relative h-10 w-10 shrink-0">
+          <img 
+            src={uploadedImage} 
+            alt="Upload preview" 
+            className="h-full w-full rounded-lg object-cover border border-outline-variant/30"
+          />
+          <button
+            type="button"
+            onClick={() => onImageUpload(null)}
+            className="absolute -right-1 -top-1 rounded-full bg-destructive p-0.5 text-white shadow-sm hover:bg-destructive/90 transition-colors"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </div>
+      ) : (
+        <Button 
+          type="button" 
+          variant="ghost" 
+          size="icon" 
+          disabled={isGenerating || disabled}
+          className="rounded-full text-muted-foreground hover:bg-muted h-10 w-10 shrink-0"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Paperclip className="w-5 h-5" />
+        </Button>
+      )}
 
       <Input 
         value={value}
@@ -49,9 +96,9 @@ export function PromptForm({
         size="icon" 
         className={cn(
           "rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 shrink-0 w-11 h-11 transition-all active:scale-95",
-          (isGenerating || disabled) && "disabled:opacity-100 disabled:cursor-not-allowed"
+          (!isValid || isGenerating || disabled) && "disabled:opacity-100 disabled:cursor-not-allowed"
         )}
-        disabled={!value.trim() || isGenerating || disabled}
+        disabled={!isValid || isGenerating || disabled}
       >
         <Send className="w-5 h-5 text-white" />
       </Button>

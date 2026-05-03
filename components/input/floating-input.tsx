@@ -10,31 +10,22 @@ import { PromptForm } from "./prompt-form"
 import { ImageCountSelector } from "./image-count-selector"
 import { OutputQualitySelector } from "./output-quality-selector"
 
+import { GenerateRequestSchema } from "@/lib/schemas"
+
 const SUGGESTIONS = ["Modern Minimal", "Cozy Lifestyle", "Premium Studio"]
 
 export function FloatingInput() {
   const [prompt, setPrompt] = useState("")
-  const generate = useGenerationStore(
-    (state: GenerationState) => state.generate
-  )
-  const isGenerating = useGenerationStore(
-    (state: GenerationState) => state.isGenerating
-  )
-  const imageCount = useGenerationStore(
-    (state: GenerationState) => state.imageCount
-  )
-  const setImageCount = useGenerationStore(
-    (state: GenerationState) => state.setImageCount
-  )
-  const outputQuality = useGenerationStore(
-    (state: GenerationState) => state.outputQuality
-  )
-  const setOutputQuality = useGenerationStore(
-    (state: GenerationState) => state.setOutputQuality
-  )
-
+  const generate = useGenerationStore((state) => state.generate)
+  const isGenerating = useGenerationStore((state) => state.isGenerating)
+  const imageCount = useGenerationStore((state) => state.imageCount)
+  const setImageCount = useGenerationStore((state) => state.setImageCount)
+  const outputQuality = useGenerationStore((state) => state.outputQuality)
+  const setOutputQuality = useGenerationStore((state) => state.setOutputQuality)
   const selectedStyle = useGenerationStore((state) => state.selectedStyle)
   const setSelectedStyle = useGenerationStore((state) => state.setSelectedStyle)
+  const uploadedImage = useGenerationStore((state) => state.uploadedImage)
+  const setUploadedImage = useGenerationStore((state) => state.setUploadedImage)
 
   const quotaRemaining = useGenerationStore((state) => state.quotaRemaining)
   const isLocalhost = typeof window !== "undefined" && 
@@ -42,9 +33,19 @@ export function FloatingInput() {
   
   const isQuotaExceeded = quotaRemaining <= 0 && !isLocalhost
 
+  const validationResult = GenerateRequestSchema.safeParse({
+    base64Image: uploadedImage || "",
+    selectedStyle,
+    customPrompt: prompt,
+    imageCount,
+    outputQuality,
+  })
+
+  const isValid = validationResult.success
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (isGenerating || isQuotaExceeded) return
+    if (!isValid || isGenerating || isQuotaExceeded) return
     const currentPrompt = prompt
     setPrompt("")
     await generate(currentPrompt)
@@ -76,6 +77,9 @@ export function FloatingInput() {
         onChange={setPrompt}
         onSubmit={handleSubmit}
         isGenerating={isGenerating}
+        uploadedImage={uploadedImage}
+        onImageUpload={setUploadedImage}
+        isValid={isValid}
         disabled={isQuotaExceeded}
       />
     </div>
