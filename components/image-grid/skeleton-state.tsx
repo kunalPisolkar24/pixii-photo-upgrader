@@ -5,8 +5,8 @@ import {
   useGenerationStore,
   type GenerationState,
 } from "@/store/use-generation-store"
-import { GenerationCounterBadge } from "./generation-counter-badge"
 import { getImageGridLayoutClassName } from "./grid-layout"
+import { QuotaRow } from "./quota-row"
 
 const LOADING_STEPS = [
   "Analyzing scene...",
@@ -23,6 +23,7 @@ export function SkeletonState() {
 
   return (
     <div className="w-full space-y-6">
+      <QuotaRow />
       <div className={getImageGridLayoutClassName(imageCount)}>
         {loadingSteps.map((step, i) => (
           <div
@@ -39,7 +40,6 @@ export function SkeletonState() {
           </div>
         ))}
       </div>
-      <GenerationCounterBadge remaining={2} total={3} />
     </div>
   )
 }
