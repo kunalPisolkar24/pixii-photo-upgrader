@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { Paperclip, Send, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import { cn, compressImage } from "@/lib/utils"
 
 interface PromptFormProps {
   value: string
@@ -33,8 +33,9 @@ export function PromptForm({
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onloadend = () => {
-        onImageUpload(reader.result as string)
+      reader.onloadend = async () => {
+        const compressed = await compressImage(reader.result as string)
+        onImageUpload(compressed)
       }
       reader.readAsDataURL(file)
     }
