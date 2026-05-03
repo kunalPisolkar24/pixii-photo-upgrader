@@ -1,7 +1,12 @@
 "use client"
 
 import { Aperture } from "lucide-react"
+import {
+  useGenerationStore,
+  type GenerationState,
+} from "@/store/use-generation-store"
 import { GenerationCounterBadge } from "./generation-counter-badge"
+import { getImageGridLayoutClassName } from "./grid-layout"
 
 const LOADING_STEPS = [
   "Analyzing scene...",
@@ -11,10 +16,15 @@ const LOADING_STEPS = [
 ]
 
 export function SkeletonState() {
+  const imageCount = useGenerationStore(
+    (state: GenerationState) => state.imageCount
+  )
+  const loadingSteps = LOADING_STEPS.slice(0, imageCount)
+
   return (
     <div className="w-full space-y-6">
-      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-container md:grid-cols-2">
-        {LOADING_STEPS.map((step, i) => (
+      <div className={getImageGridLayoutClassName(imageCount)}>
+        {loadingSteps.map((step, i) => (
           <div
             key={i}
             className="flex aspect-square flex-col items-center justify-center space-y-4 rounded-xl border border-dashed border-outline-variant/10 bg-muted/50 shadow-sm"

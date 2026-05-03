@@ -8,6 +8,7 @@ import { EmptyState } from "./empty-state"
 import { SkeletonState } from "./skeleton-state"
 import { ImageCard } from "./image-card"
 import { GenerationCounterBadge } from "./generation-counter-badge"
+import { getImageGridLayoutClassName } from "./grid-layout"
 
 export function ImageGrid() {
   const currentGenerations = useGenerationStore(
@@ -27,7 +28,7 @@ export function ImageGrid() {
 
   return (
     <div className="w-full space-y-6">
-      <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-6 px-container md:grid-cols-2">
+      <div className={getImageGridLayoutClassName(currentGenerations.length)}>
         {currentGenerations.map((img, idx) => (
           <ImageCard key={idx} src={img} alt={`Generation ${idx + 1}`} />
         ))}
