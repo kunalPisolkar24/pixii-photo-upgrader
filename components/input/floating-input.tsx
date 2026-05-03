@@ -44,6 +44,13 @@ export function FloatingInput() {
 
   const isValid = validationResult.success
 
+  const getPlaceholder = () => {
+    if (isQuotaExceeded) return "Quota exceeded for today"
+    if (!uploadedImage) return "Attach an image first..."
+    if (!isValid) return "Select a style or type 20+ chars..."
+    return "Describe your custom background..."
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isValid || isGenerating || isQuotaExceeded) return
@@ -83,6 +90,7 @@ export function FloatingInput() {
         uploadedImage={uploadedImage}
         onImageUpload={setUploadedImage}
         isValid={isValid}
+        placeholder={getPlaceholder()}
         disabled={isQuotaExceeded}
       />
     </div>

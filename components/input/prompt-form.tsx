@@ -14,6 +14,7 @@ interface PromptFormProps {
   uploadedImage: string | null
   onImageUpload: (image: string | null) => void
   isValid: boolean
+  placeholder: string
   disabled?: boolean
 }
 
@@ -25,6 +26,7 @@ export function PromptForm({
   uploadedImage,
   onImageUpload,
   isValid,
+  placeholder,
   disabled 
 }: PromptFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -88,7 +90,7 @@ export function PromptForm({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={isGenerating || disabled}
-        placeholder={disabled ? "Quota exceeded for today" : "Describe your custom background..."} 
+        placeholder={placeholder} 
         className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base h-12 px-2 disabled:opacity-100 disabled:cursor-not-allowed"
       />
 
