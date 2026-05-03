@@ -1,8 +1,10 @@
 "use client"
 
 import { Download, Trash2 } from "lucide-react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useGenerationStore } from "@/store/use-generation-store"
+import { getOptimizedCloudinaryUrl } from "@/lib/utils"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,13 +68,19 @@ export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
           </AlertDialog>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-2 xs:grid-cols-4">
         {images.map((img, idx) => (
           <div 
             key={idx} 
-            className="aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
+            className="relative aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
           >
-            <img src={img} alt="" className="w-full h-full object-cover" />
+            <Image 
+              src={getOptimizedCloudinaryUrl(img, 400, 400)} 
+              alt="" 
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 150px"
+              className="object-cover"
+            />
           </div>
         ))}
       </div>
