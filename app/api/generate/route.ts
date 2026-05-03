@@ -6,6 +6,8 @@ import { uploadToCloudinary } from "@/lib/cloudinary"
 import { puter } from "@/lib/puter"
 import { QUALITY_MODELS } from "@/lib/models"
 
+export const maxDuration = 60
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -30,14 +32,23 @@ export async function POST(request: NextRequest) {
       if (selectedStyle) finalPrompt += ` | Style: ${selectedStyle}`
       if (customPrompt) finalPrompt += ` | Additional Details: ${customPrompt}`
 
+      // Ensure base64 string is properly formatted for Puter
+      const cleanBase64 = base64Image.includes(",") 
+        ? base64Image.split(",")[1] 
+        : base64Image
+
       // @ts-ignore - puter.ai.txt2img return type in Node environment
       const image = await puter.ai.txt2img(finalPrompt, {
         model,
-        input_image: base64Image.split(",")[1] || base64Image,
+        input_image: cleanBase64,
         input_image_mime_type: "image/png",
       })
 
       const imageUrl = image.src || image.toString()
+      if (!imageUrl || typeof imageUrl !== "string") {
+        throw new Error("Puter failed to return a valid image URL")
+      }
+
       return uploadToCloudinary(imageUrl, "pixii-generations")
     })
 
