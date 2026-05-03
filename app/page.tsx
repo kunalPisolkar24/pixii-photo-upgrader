@@ -11,21 +11,18 @@ export default function Page() {
   const [historyOpen, setHistoryOpen] = useState(false)
 
   return (
-    <div className="h-screen flex flex-col bg-background selection:bg-primary/10 selection:text-primary overflow-hidden">
+    <div className="flex h-screen flex-col overflow-hidden bg-background selection:bg-primary/10 selection:text-primary">
       <TopNav onHistoryClick={() => setHistoryOpen(true)} />
-      
-      <ScrollArea className="flex-1 min-h-0 overflow-hidden">
-        <main className="flex flex-col min-h-full pb-56">
+
+      <ScrollArea className="min-h-0 flex-1 overflow-hidden">
+        <main className="flex min-h-full flex-col pb-[calc(11rem+env(safe-area-inset-bottom))] sm:pb-56">
           <ImageGrid />
         </main>
       </ScrollArea>
 
       <FloatingInput />
-      
-      <HistoryDrawer 
-        open={historyOpen} 
-        onOpenChange={setHistoryOpen} 
-      />
+
+      <HistoryDrawer open={historyOpen} onOpenChange={setHistoryOpen} />
     </div>
   )
 }

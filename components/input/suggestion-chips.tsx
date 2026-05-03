@@ -8,16 +8,20 @@ interface SuggestionChipsProps {
   disabled?: boolean
 }
 
-export function SuggestionChips({ suggestions, onSelect, disabled }: SuggestionChipsProps) {
+export function SuggestionChips({
+  suggestions,
+  onSelect,
+  disabled,
+}: SuggestionChipsProps) {
   return (
-    <div className="flex items-center gap-2 pointer-events-auto">
+    <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-2">
       {suggestions.map((suggestion) => (
         <Button
           key={suggestion}
           variant="outline"
           size="sm"
           disabled={disabled}
-          className="rounded-full bg-card/80 backdrop-blur-sm border-outline-variant/30 text-muted-foreground text-xs hover:bg-card hover:text-foreground transition-all h-9 px-4 shadow-sm disabled:opacity-100 disabled:cursor-not-allowed"
+          className="h-9 rounded-full border-outline-variant/30 bg-card/80 px-3 text-xs text-muted-foreground shadow-sm backdrop-blur-sm transition-all hover:bg-card hover:text-foreground disabled:cursor-not-allowed disabled:opacity-100 sm:px-4"
           onClick={() => onSelect(suggestion)}
         >
           {suggestion}
