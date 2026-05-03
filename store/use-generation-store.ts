@@ -23,9 +23,12 @@ export interface GenerationState {
   imageCount: ImageGenerationCount
   outputQuality: OutputQuality
   history: Generation[]
+  quotaRemaining: number
+  quotaLimit: number
   setImageCount: (count: ImageGenerationCount) => void
   setOutputQuality: (quality: OutputQuality) => void
   generate: (prompt: string) => Promise<void>
+  fetchQuota: () => Promise<void>
   removeHistoryItem: (id: string) => void
   clearHistory: () => void
 }
@@ -97,14 +100,28 @@ export const useGenerationStore = create<GenerationState>()(
       imageCount: 4,
       outputQuality: "Medium",
       history: [],
+      quotaRemaining: 3,
+      quotaLimit: 3,
       setImageCount: (imageCount: ImageGenerationCount) => set({ imageCount }),
       setOutputQuality: (outputQuality: OutputQuality) =>
         set({ outputQuality }),
+      fetchQuota: async () => {
+        try {
+          const res = await fetch("/api/quota")
+          if (res.ok) {
+            const data = await res.json()
+            set({ quotaRemaining: data.remaining, quotaLimit: data.limit })
+          }
+        } catch (error) {
+          // Error handling
+        }
+      },
       generate: async (prompt: string) => {
         const { imageCount, outputQuality } = get()
 
         set({ isGenerating: true })
 
+        // Mock delay
         await new Promise((resolve) => setTimeout(resolve, 3000))
 
         const mockImages = [
@@ -128,6 +145,9 @@ export const useGenerationStore = create<GenerationState>()(
           currentGenerations: generatedImages,
           history: [newGeneration, ...get().history],
         })
+
+        // Refresh quota after generation
+        await get().fetchQuota()
       },
       removeHistoryItem: (id: string) =>
         set((state) => ({
