@@ -121,33 +121,52 @@ export const useGenerationStore = create<GenerationState>()(
 
         set({ isGenerating: true })
 
-        // Mock delay
-        await new Promise((resolve) => setTimeout(resolve, 3000))
+        try {
+          const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              prompt,
+              imageCount,
+              outputQuality,
+            }),
+          })
 
-        const mockImages = [
-          `https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800`,
-          `https://images.unsplash.com/photo-1774624513295-a0bac2eb4661?q=80&w=870&auto=format`,
-          `https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800`,
-          `https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&q=80&w=800`,
-        ]
-        const generatedImages = mockImages.slice(0, imageCount)
+          if (!response.ok) {
+            if (response.status === 429) {
+              // Handle rate limit
+              await get().fetchQuota()
+              set({ isGenerating: false })
+              return
+            }
+            throw new Error("Failed to generate images")
+          }
 
-        const newGeneration: Generation = {
-          id: Math.random().toString(36).substring(7),
-          prompt,
-          images: generatedImages,
-          quality: outputQuality,
-          createdAt: new Date().toISOString(),
+          const data = await response.json()
+          const generatedImages = data.images
+
+          const newGeneration: Generation = {
+            id: Math.random().toString(36).substring(7),
+            prompt,
+            images: generatedImages,
+            quality: outputQuality,
+            createdAt: new Date().toISOString(),
+          }
+
+          set({
+            isGenerating: false,
+            currentGenerations: generatedImages,
+            history: [newGeneration, ...get().history],
+          })
+        } catch (error) {
+          set({ isGenerating: false })
+          console.error("Generation error:", error)
+        } finally {
+          // Refresh quota after generation attempt
+          await get().fetchQuota()
         }
-
-        set({
-          isGenerating: false,
-          currentGenerations: generatedImages,
-          history: [newGeneration, ...get().history],
-        })
-
-        // Refresh quota after generation
-        await get().fetchQuota()
       },
       removeHistoryItem: (id: string) =>
         set((state) => ({
