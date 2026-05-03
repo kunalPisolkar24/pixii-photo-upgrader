@@ -33,6 +33,9 @@ export function FloatingInput() {
     (state: GenerationState) => state.setOutputQuality
   )
 
+  const selectedStyle = useGenerationStore((state) => state.selectedStyle)
+  const setSelectedStyle = useGenerationStore((state) => state.setSelectedStyle)
+
   const quotaRemaining = useGenerationStore((state) => state.quotaRemaining)
   const isLocalhost = typeof window !== "undefined" && 
     (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
@@ -41,7 +44,7 @@ export function FloatingInput() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!prompt.trim() || isGenerating || isQuotaExceeded) return
+    if (isGenerating || isQuotaExceeded) return
     const currentPrompt = prompt
     setPrompt("")
     await generate(currentPrompt)
@@ -62,7 +65,8 @@ export function FloatingInput() {
         />
         <SuggestionChips
           suggestions={SUGGESTIONS}
-          onSelect={setPrompt}
+          selectedStyle={selectedStyle}
+          onStyleSelect={setSelectedStyle}
           disabled={isGenerating || isQuotaExceeded}
         />
       </div>

@@ -1,16 +1,19 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface SuggestionChipsProps {
   suggestions: string[]
-  onSelect: (suggestion: string) => void
+  selectedStyle: string | null
+  onStyleSelect: (style: string | null) => void
   disabled?: boolean
 }
 
 export function SuggestionChips({
   suggestions,
-  onSelect,
+  selectedStyle,
+  onStyleSelect,
   disabled,
 }: SuggestionChipsProps) {
   return (
@@ -18,11 +21,17 @@ export function SuggestionChips({
       {suggestions.map((suggestion) => (
         <Button
           key={suggestion}
-          variant="outline"
+          variant={selectedStyle === suggestion ? "default" : "outline"}
           size="sm"
           disabled={disabled}
-          className="h-9 rounded-full border-outline-variant/30 bg-card/80 px-3 text-xs text-muted-foreground shadow-sm backdrop-blur-sm transition-all hover:bg-card hover:text-foreground disabled:cursor-not-allowed disabled:opacity-100 sm:px-4"
-          onClick={() => onSelect(suggestion)}
+          className={cn(
+            "h-9 rounded-full px-3 text-xs shadow-sm transition-all sm:px-4",
+            selectedStyle === suggestion
+              ? "bg-primary text-primary-foreground border-primary"
+              : "border-outline-variant/30 bg-card/80 text-muted-foreground hover:bg-card hover:text-foreground backdrop-blur-sm",
+            disabled && "cursor-not-allowed disabled:opacity-100"
+          )}
+          onClick={() => onStyleSelect(selectedStyle === suggestion ? null : suggestion)}
         >
           {suggestion}
         </Button>
