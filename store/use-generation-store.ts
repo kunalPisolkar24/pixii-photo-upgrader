@@ -11,11 +11,9 @@ export interface Generation {
 
 export type ImageGenerationCount = 1 | 2 | 4
 export type OutputQuality =
-  | "Very Low"
   | "Low"
   | "Medium"
   | "High"
-  | "Extra High"
   | "Test"
 
 export interface GenerationState {
@@ -23,11 +21,15 @@ export interface GenerationState {
   currentGenerations: string[]
   imageCount: ImageGenerationCount
   outputQuality: OutputQuality
+  uploadedImage: string | null
+  selectedStyle: string | null
   history: Generation[]
   quotaRemaining: number
   quotaLimit: number
   setImageCount: (count: ImageGenerationCount) => void
   setOutputQuality: (quality: OutputQuality) => void
+  setUploadedImage: (image: string | null) => void
+  setSelectedStyle: (style: string | null) => void
   generate: (prompt: string) => Promise<void>
   fetchQuota: () => Promise<void>
   removeHistoryItem: (id: string) => void
@@ -36,11 +38,9 @@ export interface GenerationState {
 
 export const IMAGE_GENERATION_COUNTS = [1, 2, 4] as const
 export const OUTPUT_QUALITIES = [
-  "Very Low",
   "Low",
   "Medium",
   "High",
-  "Extra High",
   "Test",
 ] as const
 
@@ -101,12 +101,16 @@ export const useGenerationStore = create<GenerationState>()(
       currentGenerations: [],
       imageCount: 4,
       outputQuality: "Medium",
+      uploadedImage: null,
+      selectedStyle: null,
       history: [],
       quotaRemaining: 3,
       quotaLimit: 3,
       setImageCount: (imageCount: ImageGenerationCount) => set({ imageCount }),
       setOutputQuality: (outputQuality: OutputQuality) =>
         set({ outputQuality }),
+      setUploadedImage: (uploadedImage: string | null) => set({ uploadedImage }),
+      setSelectedStyle: (selectedStyle: string | null) => set({ selectedStyle }),
       fetchQuota: async () => {
         try {
           const res = await fetch("/api/quota")
@@ -133,6 +137,8 @@ export const useGenerationStore = create<GenerationState>()(
               prompt,
               imageCount,
               outputQuality,
+              base64Image: get().uploadedImage,
+              selectedStyle: get().selectedStyle,
             }),
           })
 
