@@ -17,6 +17,28 @@ export interface GenerationState {
   clearHistory: () => void;
 }
 
+const isGeneration = (value: unknown): value is Generation => {
+  if (!value || typeof value !== 'object') return false;
+
+  const generation = value as Partial<Generation>;
+
+  return (
+    typeof generation.id === 'string' &&
+    typeof generation.prompt === 'string' &&
+    typeof generation.createdAt === 'string' &&
+    Array.isArray(generation.images) &&
+    generation.images.every((image) => typeof image === 'string')
+  );
+};
+
+const getPersistedHistory = (persistedState: unknown): Generation[] => {
+  if (!persistedState || typeof persistedState !== 'object') return [];
+
+  const { history } = persistedState as { history?: unknown };
+
+  return Array.isArray(history) ? history.filter(isGeneration) : [];
+};
+
 export const useGenerationStore = create<GenerationState>()(
   persist(
     (set, get) => ({
@@ -57,9 +79,9 @@ export const useGenerationStore = create<GenerationState>()(
     {
       name: 'pixii-generation-storage',
       partialize: (state) => ({ history: state.history }),
-      merge: (persistedState: any, currentState) => ({
+      merge: (persistedState, currentState) => ({
         ...currentState,
-        history: persistedState?.history || [],
+        history: getPersistedHistory(persistedState),
       }),
     }
   )
