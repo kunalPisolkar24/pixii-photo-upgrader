@@ -13,6 +13,7 @@ export interface GenerationState {
   currentGenerations: string[];
   history: Generation[];
   generate: (prompt: string) => Promise<void>;
+  removeHistoryItem: (id: string) => void;
   clearHistory: () => void;
 }
 
@@ -47,6 +48,10 @@ export const useGenerationStore = create<GenerationState>()(
           history: [newGeneration, ...get().history],
         });
       },
+      removeHistoryItem: (id: string) => 
+        set((state) => ({
+          history: state.history.filter((item) => item.id !== id),
+        })),
       clearHistory: () => set({ history: [] }),
     }),
     {
