@@ -15,14 +15,16 @@ export async function POST(request: NextRequest) {
     const { base64Image, selectedStyle, customPrompt, imageCount, outputQuality } = validatedData
 
     if (outputQuality === "Test") {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      const mockImages = [
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&q=80&w=800",
-      ]
-      return NextResponse.json({ images: mockImages.slice(0, imageCount) })
+      const testGenerationPromises = Array.from({ length: imageCount }).map(async () => {
+        const response = await fetch(`https://picsum.photos/seed/${Math.random()}/800/800`)
+        const buffer = await response.arrayBuffer()
+        const base64 = `data:image/jpeg;base64,${Buffer.from(buffer).toString("base64")}`
+        
+        return uploadToCloudinary(base64, "pixii-tests")
+      })
+      
+      const testImages = await Promise.all(testGenerationPromises)
+      return NextResponse.json({ images: testImages })
     }
 
     const model = QUALITY_MODELS[outputQuality] || QUALITY_MODELS["Medium"]
