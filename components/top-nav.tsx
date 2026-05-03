@@ -2,12 +2,15 @@
 
 import { Aperture, History, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useGenerationStore } from "@/store/use-generation-store"
 
 interface TopNavProps {
   onHistoryClick: () => void
 }
 
 export function TopNav({ onHistoryClick }: TopNavProps) {
+  const hasImages = useGenerationStore((state) => state.currentGenerations.length > 0)
+
   return (
     <nav className="flex items-center justify-between px-container py-4 bg-background/80 backdrop-blur-md sticky top-0 z-40">
       <div className="flex items-center gap-2">
@@ -29,14 +32,16 @@ export function TopNav({ onHistoryClick }: TopNavProps) {
           <History className="w-4 h-4" />
           History
         </Button>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="gap-2 rounded-md shadow-sm"
-        >
-          Export
-          <Download className="w-4 h-4" />
-        </Button>
+        {hasImages && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="gap-2 rounded-md shadow-sm"
+          >
+            Export
+            <Download className="w-4 h-4" />
+          </Button>
+        )}
       </div>
     </nav>
   )
