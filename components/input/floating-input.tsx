@@ -8,6 +8,7 @@ import {
 import { SuggestionChips } from "./suggestion-chips"
 import { PromptForm } from "./prompt-form"
 import { ImageCountSelector } from "./image-count-selector"
+import { OutputQualitySelector } from "./output-quality-selector"
 
 const SUGGESTIONS = ["Modern Minimal", "Cozy Lifestyle", "Premium Studio"]
 
@@ -25,6 +26,12 @@ export function FloatingInput() {
   const setImageCount = useGenerationStore(
     (state: GenerationState) => state.setImageCount
   )
+  const outputQuality = useGenerationStore(
+    (state: GenerationState) => state.outputQuality
+  )
+  const setOutputQuality = useGenerationStore(
+    (state: GenerationState) => state.setOutputQuality
+  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,6 +47,11 @@ export function FloatingInput() {
         <ImageCountSelector
           value={imageCount}
           onChange={setImageCount}
+          disabled={isGenerating}
+        />
+        <OutputQualitySelector
+          value={outputQuality}
+          onChange={setOutputQuality}
           disabled={isGenerating}
         />
         <SuggestionChips

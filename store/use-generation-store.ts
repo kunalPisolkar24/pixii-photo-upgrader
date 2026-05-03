@@ -5,28 +5,48 @@ export interface Generation {
   id: string
   prompt: string
   images: string[]
+  quality?: OutputQuality
   createdAt: string
 }
 
 export type ImageGenerationCount = 1 | 2 | 4
+export type OutputQuality =
+  | "Very Low"
+  | "Low"
+  | "Medium"
+  | "High"
+  | "Extra High"
 
 export interface GenerationState {
   isGenerating: boolean
   currentGenerations: string[]
   imageCount: ImageGenerationCount
+  outputQuality: OutputQuality
   history: Generation[]
   setImageCount: (count: ImageGenerationCount) => void
+  setOutputQuality: (quality: OutputQuality) => void
   generate: (prompt: string) => Promise<void>
   removeHistoryItem: (id: string) => void
   clearHistory: () => void
 }
 
 export const IMAGE_GENERATION_COUNTS = [1, 2, 4] as const
+export const OUTPUT_QUALITIES = [
+  "Very Low",
+  "Low",
+  "Medium",
+  "High",
+  "Extra High",
+] as const
 
 const isImageGenerationCount = (
   value: unknown
 ): value is ImageGenerationCount => {
   return IMAGE_GENERATION_COUNTS.some((count) => count === value)
+}
+
+const isOutputQuality = (value: unknown): value is OutputQuality => {
+  return OUTPUT_QUALITIES.some((quality) => quality === value)
 }
 
 const isGeneration = (value: unknown): value is Generation => {
@@ -61,15 +81,28 @@ const getPersistedImageCount = (
   return isImageGenerationCount(imageCount) ? imageCount : 4
 }
 
+const getPersistedOutputQuality = (persistedState: unknown): OutputQuality => {
+  if (!persistedState || typeof persistedState !== "object") return "Medium"
+
+  const { outputQuality } = persistedState as { outputQuality?: unknown }
+
+  return isOutputQuality(outputQuality) ? outputQuality : "Medium"
+}
+
 export const useGenerationStore = create<GenerationState>()(
   persist(
     (set, get) => ({
       isGenerating: false,
       currentGenerations: [],
       imageCount: 4,
+      outputQuality: "Medium",
       history: [],
       setImageCount: (imageCount: ImageGenerationCount) => set({ imageCount }),
+      setOutputQuality: (outputQuality: OutputQuality) =>
+        set({ outputQuality }),
       generate: async (prompt: string) => {
+        const { imageCount, outputQuality } = get()
+
         set({ isGenerating: true })
 
         await new Promise((resolve) => setTimeout(resolve, 3000))
@@ -80,12 +113,13 @@ export const useGenerationStore = create<GenerationState>()(
           `https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800`,
           `https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&q=80&w=800`,
         ]
-        const generatedImages = mockImages.slice(0, get().imageCount)
+        const generatedImages = mockImages.slice(0, imageCount)
 
         const newGeneration: Generation = {
           id: Math.random().toString(36).substring(7),
           prompt,
           images: generatedImages,
+          quality: outputQuality,
           createdAt: new Date().toISOString(),
         }
 
@@ -106,10 +140,12 @@ export const useGenerationStore = create<GenerationState>()(
       partialize: (state) => ({
         history: state.history,
         imageCount: state.imageCount,
+        outputQuality: state.outputQuality,
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,
         imageCount: getPersistedImageCount(persistedState),
+        outputQuality: getPersistedOutputQuality(persistedState),
         history: getPersistedHistory(persistedState),
       }),
     }
