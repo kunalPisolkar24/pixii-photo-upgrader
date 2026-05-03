@@ -15,7 +15,7 @@ export default function Page() {
       <TopNav onHistoryClick={() => setHistoryOpen(true)} />
       
       <ScrollArea className="flex-1 min-h-0 overflow-hidden">
-        <main className="flex flex-col pt-12 pb-56">
+        <main className="flex flex-col min-h-full pb-56">
           <ImageGrid />
         </main>
       </ScrollArea>
