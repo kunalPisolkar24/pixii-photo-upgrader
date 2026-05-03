@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json({ error: 'Valid prompt is required' }, { status: 400 });
     }
-
+    console.log("hit");
     const response = await puter.ai.chat(prompt);
     const reply = extractText(response);
 
