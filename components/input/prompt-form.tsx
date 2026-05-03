@@ -98,12 +98,14 @@ export function PromptForm({
         type="submit" 
         size="icon" 
         className={cn(
-          "rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 shrink-0 w-11 h-11 transition-all active:scale-95",
-          (!isValid || isGenerating || disabled) && "disabled:opacity-100 disabled:cursor-not-allowed"
+          "rounded-full shrink-0 w-11 h-11 transition-all",
+          (!isValid || isGenerating || disabled) 
+            ? "bg-muted text-muted-foreground opacity-50 shadow-none cursor-not-allowed" 
+            : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 active:scale-95"
         )}
         disabled={!isValid || isGenerating || disabled}
       >
-        <Send className="w-5 h-5 text-white" />
+        <Send className="w-5 h-5" />
       </Button>
     </form>
   )
