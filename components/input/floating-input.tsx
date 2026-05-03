@@ -9,7 +9,7 @@ import { SuggestionChips } from "./suggestion-chips"
 import { PromptForm } from "./prompt-form"
 import { ImageCountSelector } from "./image-count-selector"
 
-const SUGGESTIONS = ["Minimalist Studio", "Kitchen Counter", "Silk Sheets"]
+const SUGGESTIONS = ["Modern Minimal", "Cozy Lifestyle", "Premium Studio"]
 
 export function FloatingInput() {
   const [prompt, setPrompt] = useState("")
