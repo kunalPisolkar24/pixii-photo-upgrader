@@ -16,6 +16,7 @@ export type OutputQuality =
   | "Medium"
   | "High"
   | "Extra High"
+  | "Test"
 
 export interface GenerationState {
   isGenerating: boolean
@@ -40,6 +41,7 @@ export const OUTPUT_QUALITIES = [
   "Medium",
   "High",
   "Extra High",
+  "Test",
 ] as const
 
 const isImageGenerationCount = (
