@@ -2,10 +2,25 @@ import {
   Generation, 
   ImageGenerationCount, 
   OutputQuality, 
-  QuotaInfo 
+  QuotaInfo,
+  ApiResponse
 } from "./types"
 
 export class APIClient {
+  private static async handleResponse<T>(response: Response): Promise<T> {
+    const json: ApiResponse<T> = await response.json()
+    
+    if (json.error || !response.ok) {
+      throw new Error(json.error || `HTTP error! status: ${response.status}`)
+    }
+
+    if (json.data === undefined) {
+      throw new Error("API returned no data")
+    }
+
+    return json.data
+  }
+
   static async generateImages(params: {
     prompt: string
     imageCount: ImageGenerationCount
@@ -19,19 +34,11 @@ export class APIClient {
       body: JSON.stringify(params),
     })
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.error || "Failed to generate images")
-    }
-
-    return response.json()
+    return this.handleResponse<{ images: string[] }>(response)
   }
 
   static async getQuota(): Promise<QuotaInfo> {
     const response = await fetch("/api/quota")
-    if (!response.ok) {
-      throw new Error("Failed to fetch quota")
-    }
-    return response.json()
+    return this.handleResponse<QuotaInfo>(response)
   }
 }
