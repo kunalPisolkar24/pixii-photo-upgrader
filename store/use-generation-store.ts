@@ -144,8 +144,6 @@ export const useGenerationStore = create<GenerationState>()(
 
           if (!response.ok) {
             if (response.status === 429) {
-              // Handle rate limit
-              await get().fetchQuota()
               set({ isGenerating: false })
               return
             }
@@ -172,7 +170,6 @@ export const useGenerationStore = create<GenerationState>()(
           set({ isGenerating: false })
           console.error("Generation error:", error)
         } finally {
-          // Refresh quota after generation attempt
           await get().fetchQuota()
         }
       },
