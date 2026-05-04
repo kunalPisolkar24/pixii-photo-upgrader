@@ -4,7 +4,7 @@ import { Download, Trash2 } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useGenerationStore } from "@/store/use-generation-store"
-import { getOptimizedCloudinaryUrl } from "@/lib/utils"
+import { getOptimizedCloudinaryUrl } from "@/lib/cloudinary"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -69,9 +69,9 @@ export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2 xs:grid-cols-4">
-        {images.map((img, idx) => (
+        {images.map((img) => (
           <div 
-            key={idx} 
+            key={img} 
             className="relative aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
           >
             <Image 
