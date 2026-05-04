@@ -1,4 +1,4 @@
-import { OutputQuality } from "@/store/use-generation-store"
+import { OutputQuality } from "@/lib/types"
 
 export const QUALITY_MODELS: Record<string, string> = {
   "High": "gemini-3-pro-image-preview",
