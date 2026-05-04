@@ -1,10 +1,11 @@
 "use client"
 
-import { Download, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useGenerationStore } from "@/store/use-generation-store"
 import { getOptimizedCloudinaryUrl } from "@/lib/cloudinary-url"
+import { ImageExportMenu } from "@/components/image-export-menu"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,10 +34,14 @@ export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
           {prompt}
         </p>
         <div className="flex items-center gap-1.5 shrink-0">
-          <Button size="sm" className="h-8 gap-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-semibold shadow-none">
-            Download
-            <Download className="w-3.5 h-3.5" />
-          </Button>
+          <ImageExportMenu
+            images={images}
+            filenamePrefix={`pixii-${prompt || id}`}
+            label="Download"
+            size="sm"
+            triggerClassName="h-8 gap-1.5 rounded-lg bg-primary/10 text-xs font-semibold text-primary shadow-none hover:bg-primary/20"
+            errorClassName="max-w-40 text-[11px]"
+          />
           
           <AlertDialog>
             <AlertDialogTrigger asChild>

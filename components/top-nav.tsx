@@ -1,18 +1,18 @@
 "use client"
 
-import { Aperture, History, Download } from "lucide-react"
+import { Aperture, History } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useGenerationStore } from "@/store/use-generation-store"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { ImageExportMenu } from "@/components/image-export-menu"
 
 interface TopNavProps {
   onHistoryClick: () => void
 }
 
 export function TopNav({ onHistoryClick }: TopNavProps) {
-  const hasImages = useGenerationStore(
-    (state) => state.currentGenerations.length > 0
-  )
+  const currentGenerations = useGenerationStore((state) => state.currentGenerations)
+  const hasImages = currentGenerations.length > 0
 
   return (
     <nav className="sticky top-0 z-40 flex items-center justify-between bg-background/80 px-container py-4 backdrop-blur-md">
@@ -38,14 +38,14 @@ export function TopNav({ onHistoryClick }: TopNavProps) {
           History
         </Button>
         {hasImages && (
-          <Button
+          <ImageExportMenu
+            images={currentGenerations}
+            filenamePrefix="pixii-current"
+            label="Export"
             variant="outline"
             size="sm"
-            className="gap-2 rounded-md shadow-sm"
-          >
-            Export
-            <Download className="h-4 w-4" />
-          </Button>
+            triggerClassName="gap-2 rounded-md shadow-sm"
+          />
         )}
       </div>
     </nav>
