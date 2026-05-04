@@ -10,7 +10,6 @@ export function useGenerationActions() {
     selectedStyle,
     setGenerating,
     addGeneration,
-    setCurrentGenerations,
   } = useGenerationStore()
   
   const { fetchQuota } = useQuotaStore()
