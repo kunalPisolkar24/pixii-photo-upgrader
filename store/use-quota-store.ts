@@ -21,11 +21,13 @@ export const useQuotaStore = create<QuotaState>((set) => ({
       set({ 
         quotaRemaining: data.remaining, 
         quotaLimit: data.limit,
-        isLoading: false 
+        isLoading: false,
+        error: null
       })
     } catch (err) {
+      console.error("Quota fetch failed:", err)
       set({ 
-        error: err instanceof Error ? err.message : "Failed to fetch quota",
+        error: err instanceof Error ? err.message : "Unable to reach quota service",
         isLoading: false 
       })
     }
