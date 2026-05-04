@@ -34,7 +34,7 @@ export interface GenerationState {
 
 export const useGenerationStore = create<GenerationState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       isGenerating: false,
       currentGenerations: [],
       imageCount: 4,

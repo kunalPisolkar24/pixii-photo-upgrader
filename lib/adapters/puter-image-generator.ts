@@ -4,7 +4,26 @@ import { BASE_PROMPTS } from "../prompts"
 import { uploadToCloudinary } from "../cloudinary"
 import { IImageGenerator, GenerationParams } from "../interfaces/image-generator.interface"
 
+type PuterImageOptions = {
+  model: string
+  input_image: string
+  input_image_mime_type: string
+}
+
+type PuterImageResult = {
+  src?: string
+  toString: () => string
+}
+
+type PuterImageApi = {
+  ai: {
+    txt2img: (prompt: string, options: PuterImageOptions) => Promise<PuterImageResult>
+  }
+}
+
 export class PuterImageGenerator implements IImageGenerator {
+  private readonly imageApi = puter as unknown as PuterImageApi
+
   async generate(params: GenerationParams): Promise<string[]> {
     const { prompt, imageCount, outputQuality, base64Image, selectedStyle } = params
     const model = QUALITY_MODELS[outputQuality] || QUALITY_MODELS["Medium"]
@@ -17,8 +36,7 @@ export class PuterImageGenerator implements IImageGenerator {
       if (selectedStyle) finalPrompt += ` | Style: ${selectedStyle}`
       if (prompt) finalPrompt += ` | Additional Details: ${prompt}`
 
-      // @ts-ignore - puter.ai.txt2img type assertion
-      const result = await puter.ai.txt2img(finalPrompt, {
+      const result = await this.imageApi.ai.txt2img(finalPrompt, {
         model,
         input_image: cleanBase64,
         input_image_mime_type: "image/png",

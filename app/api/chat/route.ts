@@ -3,22 +3,25 @@ import type { NextRequest } from 'next/server';
 import { puter } from '@/lib/puter';
 import { ApiResponseFactory } from '@/lib/api-response-factory';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === 'object';
+}
+
 function extractText(response: unknown): string {
   if (typeof response === 'string') {
     return response;
   }
   
-  if (response && typeof response === 'object') {
-    const res = response as any
-    if (res.message && typeof res.message.content === 'string') {
-      return res.message.content;
+  if (isRecord(response)) {
+    const { message, text } = response;
+    if (isRecord(message) && typeof message.content === 'string') {
+      return message.content;
     }
-    if (typeof res.text === 'string') {
-      return res.text;
+    if (typeof text === 'string') {
+      return text;
     }
   }
   
-  // Safely handle potential circular structures or non-stringifiable objects
   try {
     return String(response);
   } catch {

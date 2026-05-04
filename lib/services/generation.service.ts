@@ -1,4 +1,3 @@
-import { uploadToCloudinary } from "@/lib/cloudinary"
 import { IImageGenerator, GenerationParams } from "@/lib/interfaces/image-generator.interface"
 import { PuterImageGenerator } from "@/lib/adapters/puter-image-generator"
 

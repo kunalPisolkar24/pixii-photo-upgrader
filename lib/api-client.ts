@@ -1,6 +1,5 @@
-import { 
-  Generation, 
-  ImageGenerationCount, 
+import {
+  ImageGenerationCount,
   OutputQuality, 
   QuotaInfo,
   ApiResponse

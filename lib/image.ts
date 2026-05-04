@@ -40,7 +40,7 @@ export async function compressImage(
       resolve(canvas.toDataURL("image/jpeg", quality))
     }
 
-    img.onerror = (e) => {
+    img.onerror = () => {
       clearTimeout(timeout)
       reject(new Error("Failed to load image for compression"))
     }
