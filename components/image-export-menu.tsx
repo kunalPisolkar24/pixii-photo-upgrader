@@ -28,6 +28,8 @@ interface ImageExportMenuProps {
   triggerClassName?: string
   labelClassName?: string
   errorClassName?: string
+  contentClassName?: string
+  ariaLabel?: string
   variant?: ButtonProps["variant"]
   size?: ButtonProps["size"]
   align?: DropdownContentProps["align"]
@@ -43,6 +45,8 @@ export function ImageExportMenu({
   triggerClassName,
   labelClassName,
   errorClassName,
+  contentClassName,
+  ariaLabel,
   variant = "outline",
   size = "sm",
   align = "end",
@@ -51,6 +55,7 @@ export function ImageExportMenu({
 }: ImageExportMenuProps) {
   const [isExporting, setIsExporting] = React.useState(false)
   const [error, setError] = React.useState<string | null>(null)
+  const errorId = React.useId()
   const isDisabled = disabled || isExporting || images.length === 0
 
   const handleExport = async (preset: ImageExportPreset) => {
@@ -77,6 +82,8 @@ export function ImageExportMenu({
             className={triggerClassName}
             disabled={isDisabled}
             aria-busy={isExporting}
+            aria-describedby={error ? errorId : undefined}
+            aria-label={ariaLabel ?? `${label} images`}
           >
             <span className={cn(labelClassName)}>
               {isExporting ? "Preparing" : label}
@@ -92,7 +99,7 @@ export function ImageExportMenu({
         <DropdownMenuContent
           align={align}
           side={side}
-          className="w-52 min-w-52"
+          className={cn("w-52 min-w-52 max-w-[calc(100vw-2rem)]", contentClassName)}
         >
           <DropdownMenuLabel>Export resolution</DropdownMenuLabel>
           {IMAGE_EXPORT_PRESETS.map((preset) => (
@@ -112,6 +119,7 @@ export function ImageExportMenu({
       </DropdownMenu>
       {error ? (
         <p
+          id={errorId}
           role="status"
           aria-live="polite"
           className={cn(

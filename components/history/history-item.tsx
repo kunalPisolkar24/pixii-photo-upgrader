@@ -29,18 +29,19 @@ export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
 
   return (
     <div className="space-y-3">
-      <div className="flex items-start justify-between gap-4">
-        <p className="text-sm font-medium leading-tight text-foreground/90 line-clamp-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <p className="text-sm font-medium leading-tight text-foreground/90 line-clamp-2 sm:flex-1">
           {prompt}
         </p>
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex shrink-0 items-center gap-1.5 self-end sm:self-start">
           <ImageExportMenu
             images={images}
             filenamePrefix={`pixii-${prompt || id}`}
             label="Download"
+            ariaLabel="Download generation images"
             size="sm"
             triggerClassName="h-8 gap-1.5 rounded-lg bg-primary/10 text-xs font-semibold text-primary shadow-none hover:bg-primary/20"
-            errorClassName="max-w-40 text-[11px]"
+            errorClassName="max-w-44 text-[11px]"
           />
           
           <AlertDialog>
