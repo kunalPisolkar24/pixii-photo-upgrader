@@ -2,8 +2,6 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { checkRateLimit } from "./lib/services/rate-limiter.service"
 
-export const runtime = "edge"
-
 export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api/generate")) {
     const forwarded = request.headers.get("x-forwarded-for")
