@@ -6,7 +6,8 @@ export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api/generate")) {
     const forwarded = request.headers.get("x-forwarded-for")
     const ip = forwarded ? forwarded.split(",")[0] : (request.headers.get("x-real-ip") ?? "127.0.0.1")
-    const { success, limit, remaining, reset } = await checkRateLimit(ip)
+    const hostname = request.nextUrl.hostname
+    const { success, limit, remaining, reset } = await checkRateLimit(ip, hostname)
 
     if (!success) {
       return new NextResponse("Too Many Requests", {
