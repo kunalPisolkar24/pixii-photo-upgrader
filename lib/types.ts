@@ -14,3 +14,9 @@ export interface QuotaInfo {
   remaining: number
   reset: number
 }
+
+export interface ApiResponse<T> {
+  data?: T
+  error?: string
+  status: number
+}
