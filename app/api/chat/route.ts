@@ -22,6 +22,11 @@ function extractText(response: unknown): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const secret = request.headers.get("X-Chat-Secret")
+    if (secret !== process.env.CHAT_TEST_SECRET) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { prompt } = await request.json();
 
     if (!prompt || typeof prompt !== 'string') {
