@@ -26,6 +26,7 @@ export function getLocalRateLimitResult() {
     limit: LIMIT,
     remaining: LIMIT,
     reset: 0,
+    pending: Promise.resolve(),
   }
 }
 
@@ -44,5 +45,11 @@ export async function checkRateLimit(ip: string, hostname?: string) {
     return getLocalRateLimitResult()
   }
 
-  return getRatelimit().limit(ip)
+  try {
+    return await getRatelimit().limit(ip)
+  } catch (error) {
+    console.error("[RateLimiter] Redis error:", error)
+    // Fail open — allow the request but log the failure
+    return { ...getLocalRateLimitResult(), success: true }
+  }
 }
