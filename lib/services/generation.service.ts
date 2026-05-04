@@ -1,50 +1,16 @@
-import { puter } from "@/lib/puter"
 import { uploadToCloudinary } from "@/lib/cloudinary"
-import { QUALITY_MODELS } from "@/lib/models"
-import { BASE_PROMPTS } from "@/lib/prompts"
-import { OutputQuality, ImageGenerationCount } from "@/lib/types"
+import { IImageGenerator, GenerationParams } from "@/lib/interfaces/image-generator.interface"
+import { PuterImageGenerator } from "@/lib/adapters/puter-image-generator"
 
 export class GenerationService {
-  static async generate(params: {
-    prompt?: string
-    imageCount: ImageGenerationCount
-    outputQuality: OutputQuality
-    base64Image: string
-    selectedStyle: string | null
-  }): Promise<string[]> {
-    const { prompt, imageCount, outputQuality, base64Image, selectedStyle } = params
-    
-    if (outputQuality === "Test") {
-      return this.generateTestImages(imageCount)
+  private static generator: IImageGenerator = new PuterImageGenerator()
+
+  static async generate(params: GenerationParams): Promise<string[]> {
+    if (params.outputQuality === "Test") {
+      return this.generateTestImages(params.imageCount)
     }
 
-    const model = QUALITY_MODELS[outputQuality] || QUALITY_MODELS["Medium"]
-    const cleanBase64 = base64Image.includes(",") ? base64Image.split(",")[1] : base64Image
-
-    const generationPromises = Array.from({ length: imageCount }).map(async (_, i) => {
-      // Use modulo to avoid out-of-bounds access if BASE_PROMPTS changes
-      const basePrompt = BASE_PROMPTS[i % BASE_PROMPTS.length]
-      let finalPrompt = basePrompt
-      
-      if (selectedStyle) finalPrompt += ` | Style: ${selectedStyle}`
-      if (prompt) finalPrompt += ` | Additional Details: ${prompt}`
-
-      // @ts-ignore - puter.ai.txt2img type assertion
-      const result = await puter.ai.txt2img(finalPrompt, {
-        model,
-        input_image: cleanBase64,
-        input_image_mime_type: "image/png",
-      })
-
-      const imageUrl = result.src || result.toString()
-      if (!imageUrl || typeof imageUrl !== "string") {
-        throw new Error("AI generation service failed to return a valid image")
-      }
-
-      return uploadToCloudinary(imageUrl, "pixii-generations")
-    })
-
-    return Promise.all(generationPromises)
+    return this.generator.generate(params)
   }
 
   private static async generateTestImages(count: number): Promise<string[]> {
