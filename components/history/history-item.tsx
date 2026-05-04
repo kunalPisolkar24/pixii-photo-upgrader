@@ -4,7 +4,7 @@ import { Download, Trash2 } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useGenerationStore } from "@/store/use-generation-store"
-import { getOptimizedCloudinaryUrl } from "@/lib/cloudinary"
+import { getOptimizedCloudinaryUrl } from "@/lib/cloudinary-url"
 import {
   AlertDialog,
   AlertDialogAction,
