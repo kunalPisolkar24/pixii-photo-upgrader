@@ -14,7 +14,7 @@ export default function Page() {
 
   useEffect(() => {
     fetchQuota()
-  }, [fetchQuota])
+  }, []) // fetchQuota is stable from Zustand store
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background selection:bg-primary/10 selection:text-primary">

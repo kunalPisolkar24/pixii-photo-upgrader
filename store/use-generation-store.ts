@@ -10,7 +10,6 @@ import {
   getPersistedImageCount, 
   getPersistedOutputQuality 
 } from "./persistence"
-import { APIClient } from "@/lib/api-client"
 
 export interface GenerationState {
   isGenerating: boolean
