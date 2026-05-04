@@ -14,13 +14,9 @@ export class GenerationService {
   }
 
   private static async generateTestImages(count: number): Promise<string[]> {
-    const testPromises = Array.from({ length: count }).map(async () => {
+    return Array.from({ length: count }).map(() => {
       const seed = crypto.randomUUID()
-      const response = await fetch(`https://picsum.photos/seed/${seed}/800/800`)
-      const buffer = await response.arrayBuffer()
-      const base64 = `data:image/jpeg;base64,${Buffer.from(buffer).toString("base64")}`
-      return uploadToCloudinary(base64, "pixii-tests")
+      return `https://picsum.photos/seed/${seed}/800/800`
     })
-    return Promise.all(testPromises)
   }
 }
