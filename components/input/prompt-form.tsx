@@ -4,7 +4,8 @@ import { useRef } from "react"
 import { Paperclip, Send, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { cn, compressImage } from "@/lib/utils"
+import { cn } from "@/lib/utils"
+import { compressImage } from "@/lib/image"
 
 interface PromptFormProps {
   value: string
