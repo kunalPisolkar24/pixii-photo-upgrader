@@ -7,8 +7,8 @@ export const ratelimit = new Ratelimit({
   analytics: true,
 })
 
-export async function checkRateLimit(ip: string) {
-  const isLocal = ip === "127.0.0.1" || ip === "::1" || ip === "localhost"
+export async function checkRateLimit(ip: string, hostname?: string) {
+  const isLocal = hostname === "localhost" || hostname === "127.0.0.1"
   
   const result = await ratelimit.limit(ip)
   
