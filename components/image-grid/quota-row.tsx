@@ -1,11 +1,11 @@
 "use client"
 
-import { useGenerationStore } from "../../store/use-generation-store"
+import { useQuotaStore } from "../../store/use-quota-store"
 import { GenerationCounterBadge } from "./generation-counter-badge"
 
 export function QuotaRow() {
-  const remaining = useGenerationStore((state) => state.quotaRemaining)
-  const total = useGenerationStore((state) => state.quotaLimit)
+  const remaining = useQuotaStore((state) => state.quotaRemaining)
+  const total = useQuotaStore((state) => state.quotaLimit)
 
   return (
     <div className="mx-auto flex w-full max-w-5xl justify-center px-container">
