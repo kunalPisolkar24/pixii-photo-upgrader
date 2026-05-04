@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { GenerateRequestSchema } from "@/lib/schemas"
 import { GenerationService } from "@/lib/services/generation.service"
-import { ApiResponse } from "@/lib/types"
+import { ApiResponseFactory } from "@/lib/api-response-factory"
 
 export const maxDuration = 60
 
@@ -13,23 +13,13 @@ export async function POST(request: NextRequest) {
     
     const generatedImages = await GenerationService.generate(validatedData)
 
-    const response: ApiResponse<{ images: string[] }> = {
-      data: { images: generatedImages },
-      status: 200
-    }
-
-    return NextResponse.json(response)
+    return NextResponse.json(ApiResponseFactory.success({ images: generatedImages }))
   } catch (error) {
     console.error("Generation route error:", error)
     
     const message = error instanceof Error ? error.message : "Failed to generate images"
     const status = error instanceof Error && "name" in error && error.name === "ZodError" ? 400 : 500
     
-    const response: ApiResponse<never> = {
-      error: message,
-      status
-    }
-
-    return NextResponse.json(response, { status })
+    return NextResponse.json(ApiResponseFactory.error(message, status), { status })
   }
 }

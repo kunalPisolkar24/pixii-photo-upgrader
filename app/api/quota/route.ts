@@ -2,7 +2,8 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { ratelimit } from "@/lib/services/rate-limiter.service"
 import { isLocalEnvironment } from "@/lib/environment"
-import { ApiResponse, QuotaInfo } from "@/lib/types"
+import { QuotaInfo } from "@/lib/types"
+import { ApiResponseFactory } from "@/lib/api-response-factory"
 
 export async function GET(request: NextRequest) {
   try {
@@ -28,17 +29,9 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const response: ApiResponse<QuotaInfo> = {
-      data: quotaData,
-      status: 200
-    }
-
-    return NextResponse.json(response)
+    return NextResponse.json(ApiResponseFactory.success(quotaData))
   } catch (error) {
-    const response: ApiResponse<never> = {
-      error: error instanceof Error ? error.message : "Failed to fetch quota",
-      status: 500
-    }
-    return NextResponse.json(response, { status: 500 })
+    const message = error instanceof Error ? error.message : "Failed to fetch quota"
+    return NextResponse.json(ApiResponseFactory.error(message, 500), { status: 500 })
   }
 }

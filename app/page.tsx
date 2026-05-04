@@ -1,20 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { TopNav } from "@/components/top-nav"
 import { HistoryDrawer } from "@/components/history"
 import { ImageGrid } from "@/components/image-grid"
 import { FloatingInput } from "@/components/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { useQuotaStore } from "@/store/use-quota-store"
+import { useAppInitialization } from "@/hooks/use-app-initialization"
 
 export default function Page() {
   const [historyOpen, setHistoryOpen] = useState(false)
-  const fetchQuota = useQuotaStore((state) => state.fetchQuota)
-
-  useEffect(() => {
-    fetchQuota()
-  }, []) // fetchQuota is stable from Zustand store
+  
+  // Encapsulated initialization logic
+  useAppInitialization()
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background selection:bg-primary/10 selection:text-primary">

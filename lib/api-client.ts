@@ -8,10 +8,17 @@ import {
 
 export class APIClient {
   private static async handleResponse<T>(response: Response): Promise<T> {
+    const contentType = response.headers.get("content-type")
+    
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await response.text()
+      throw new Error(text || `Unexpected response format: ${response.status}`)
+    }
+
     const json: ApiResponse<T> = await response.json()
     
     if (json.error || !response.ok) {
-      throw new Error(json.error || `HTTP error! status: ${response.status}`)
+      throw new Error(json.error || `Server error: ${response.status}`)
     }
 
     if (json.data === undefined) {
