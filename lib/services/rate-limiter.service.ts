@@ -7,8 +7,10 @@ export const ratelimit = new Ratelimit({
   analytics: true,
 })
 
+import { isLocalEnvironment } from "../environment"
+
 export async function checkRateLimit(ip: string, hostname?: string) {
-  const isLocal = hostname === "localhost" || hostname === "127.0.0.1"
+  const isLocal = isLocalEnvironment(hostname)
   
   const result = await ratelimit.limit(ip)
   

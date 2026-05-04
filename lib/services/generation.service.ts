@@ -6,7 +6,7 @@ import { OutputQuality, ImageGenerationCount } from "@/lib/types"
 
 export class GenerationService {
   static async generate(params: {
-    prompt: string
+    prompt?: string
     imageCount: ImageGenerationCount
     outputQuality: OutputQuality
     base64Image: string
