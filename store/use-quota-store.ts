@@ -9,12 +9,16 @@ interface QuotaState {
   fetchQuota: () => Promise<void>
 }
 
-export const useQuotaStore = create<QuotaState>((set) => ({
+export const useQuotaStore = create<QuotaState>((set, get) => ({
   quotaRemaining: 3,
   quotaLimit: 3,
   isLoading: false,
   error: null,
   fetchQuota: async () => {
+    if (get().isLoading) {
+      return
+    }
+
     set({ isLoading: true, error: null })
     try {
       const data = await APIClient.getQuota()
