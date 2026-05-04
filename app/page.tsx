@@ -6,11 +6,11 @@ import { HistoryDrawer } from "@/components/history"
 import { ImageGrid } from "@/components/image-grid"
 import { FloatingInput } from "@/components/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { useGenerationStore } from "@/store/use-generation-store"
+import { useQuotaStore } from "@/store/use-quota-store"
 
 export default function Page() {
   const [historyOpen, setHistoryOpen] = useState(false)
-  const fetchQuota = useGenerationStore((state) => state.fetchQuota)
+  const fetchQuota = useQuotaStore((state) => state.fetchQuota)
 
   useEffect(() => {
     fetchQuota()
