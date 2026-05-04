@@ -1,4 +1,9 @@
 export function isLocalEnvironment(hostname?: string): boolean {
+  // Allow forcing rate limiting in dev for testing
+  if (process.env.FORCE_RATE_LIMIT === "true") {
+    return false
+  }
+
   if (typeof window !== "undefined") {
     const currentHostname = window.location.hostname
     return (
