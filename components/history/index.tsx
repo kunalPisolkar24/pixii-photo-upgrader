@@ -33,7 +33,7 @@ export function HistoryDrawer({ open, onOpenChange }: HistoryDrawerProps) {
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-full max-w-md ml-auto rounded-none border-l">
+      <DrawerContent className="h-[100dvh] w-full sm:max-w-md ml-auto rounded-none border-l">
         <div className="flex flex-col h-full overflow-hidden">
           <DrawerHeader className="flex flex-row items-center justify-between border-b px-6 py-4">
             <DrawerTitle className="text-xl font-heading font-semibold tracking-tight">History</DrawerTitle>
@@ -47,7 +47,7 @@ export function HistoryDrawer({ open, onOpenChange }: HistoryDrawerProps) {
           <HistorySearch value={searchQuery} onChange={setSearchQuery} />
 
           <ScrollArea className="flex-1 min-h-0 px-6">
-            <div className="space-y-8 pb-8">
+            <div className="space-y-8 pb-[calc(2rem+env(safe-area-inset-bottom))]">
               {filteredHistory.map((item) => (
                 <HistoryItem key={item.id} id={item.id} prompt={item.prompt} images={item.images} />
               ))}
