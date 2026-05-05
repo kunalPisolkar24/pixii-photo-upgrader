@@ -90,45 +90,62 @@ export function PromptForm({
     <form 
       onSubmit={onSubmit}
       className={cn(
-        "w-full max-w-2xl bg-card rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant/20 flex flex-col p-2 pointer-events-auto transition-all duration-300 overflow-hidden",
-        uploadedImages.length > 0 && "rounded-[1.5rem]"
+        "w-full max-w-2xl bg-card rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.12)] border border-outline-variant/20 flex flex-col p-3 sm:p-4 pointer-events-auto transition-all duration-500 ease-out overflow-hidden",
+        uploadedImages.length > 0 && "rounded-[2rem]"
       )}
     >
-      <div className="flex items-end gap-2 pl-2">
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          accept="image/*"
-          multiple
-          onChange={handleFileChange}
-        />
-        
-        <div className="flex items-center gap-1.5 py-1 min-h-[48px]">
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept="image/*"
+        multiple
+        onChange={handleFileChange}
+      />
+      
+      {/* Uploaded Images Preview (Top Row) */}
+      {uploadedImages.length > 0 && (
+        <div className="flex items-center gap-3 px-2 pb-4 pt-1 animate-in fade-in slide-in-from-top-4 duration-300">
           {uploadedImages.map((img, idx) => (
-            <div key={idx} className="relative h-10 w-10 shrink-0 group">
+            <div key={idx} className="relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 group">
               <img 
                 src={img} 
                 alt={`Upload ${idx + 1}`} 
-                className="h-full w-full rounded-lg object-cover border border-outline-variant/30 transition-transform group-hover:scale-105"
+                className="h-full w-full rounded-xl object-cover border border-outline-variant/30 shadow-sm transition-all group-hover:scale-105 group-hover:shadow-md"
               />
               <button
                 type="button"
                 onClick={() => removeImage(idx)}
-                className="absolute -right-1.5 -top-1.5 rounded-full bg-destructive p-0.5 text-white shadow-md opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive/90"
+                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive/90 hover:scale-110 z-10"
               >
                 <X className="h-3 w-3" />
               </button>
             </div>
           ))}
+        </div>
+      )}
 
+      {/* Main Text Input (Middle Row) */}
+      <Textarea 
+        ref={textareaRef}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        disabled={isGenerating || disabled}
+        placeholder={placeholder} 
+        className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-[15px] sm:text-base min-h-[72px] sm:min-h-[80px] max-h-[200px] px-2 py-1 resize-none disabled:opacity-100 disabled:cursor-not-allowed custom-scrollbar"
+      />
+
+      {/* Action Bar (Bottom Row) */}
+      <div className="flex items-center justify-between px-1 pt-3 mt-1 border-t border-outline-variant/10">
+        <div className="flex items-center gap-2">
           {uploadedImages.length < 3 && (
             <Button 
               type="button" 
               variant="ghost" 
               size="icon" 
               disabled={isGenerating || disabled}
-              className="rounded-xl text-muted-foreground hover:bg-muted h-10 w-10 shrink-0 border border-dashed border-outline-variant/30"
+              className="rounded-full text-muted-foreground hover:bg-muted h-10 w-10 shrink-0 border border-outline-variant/20 transition-colors active:scale-95"
               onClick={() => fileInputRef.current?.click()}
             >
               <Paperclip className="w-5 h-5" />
@@ -136,24 +153,14 @@ export function PromptForm({
           )}
         </div>
 
-        <Textarea 
-          ref={textareaRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={isGenerating || disabled}
-          placeholder={placeholder} 
-          className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base min-h-[48px] max-h-[160px] py-3 px-2 resize-none disabled:opacity-100 disabled:cursor-not-allowed custom-scrollbar"
-        />
-
         <Button 
           type="submit" 
           size="icon" 
           className={cn(
-            "rounded-full shrink-0 w-11 h-11 mb-0.5 transition-all",
+            "rounded-full shrink-0 w-10 h-10 sm:w-11 sm:h-11 transition-all duration-300",
             (!isValid || isGenerating || disabled) 
               ? "bg-muted text-muted-foreground opacity-50 shadow-none cursor-not-allowed" 
-              : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 active:scale-95"
+              : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-90"
           )}
           disabled={!isValid || isGenerating || disabled}
         >
