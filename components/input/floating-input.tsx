@@ -6,8 +6,7 @@ import { useQuotaStore } from "../../store/use-quota-store"
 import { useGenerationActions } from "../../hooks/use-generation-actions"
 import { SuggestionChips } from "./suggestion-chips"
 import { PromptForm } from "./prompt-form"
-import { ImageCountSelector } from "./image-count-selector"
-import { OutputQualitySelector } from "./output-quality-selector"
+import { GenerationOptions } from "./generation-options"
 
 import { GenerateRequestSchema } from "@/lib/schemas"
 import { STYLE_PACKS } from "@/lib/style-packs"
@@ -38,6 +37,10 @@ export function FloatingInput() {
     setOutputQuality,
     selectedStyle,
     setSelectedStyle,
+    aspectRatio,
+    setAspectRatio,
+    resolution,
+    setResolution,
     uploadedImages,
     setUploadedImages
   } = useGenerationStore()
@@ -58,6 +61,8 @@ export function FloatingInput() {
     prompt,
     imageCount,
     outputQuality,
+    aspectRatio,
+    resolution,
   })
 
   const isValid = validationResult.success
@@ -82,15 +87,16 @@ export function FloatingInput() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex flex-col items-center gap-3 px-4 sm:bottom-10 sm:gap-4 sm:px-container">
-      <div className="flex max-w-full flex-wrap items-center justify-center gap-2">
-        <ImageCountSelector
-          value={imageCount}
-          onChange={setImageCount}
-          disabled={isGenerating || isQuotaExceeded}
-        />
-        <OutputQualitySelector
-          value={outputQuality}
-          onChange={setOutputQuality}
+      <div className="flex max-w-full items-center justify-center gap-2">
+        <GenerationOptions
+          imageCount={imageCount}
+          onImageCountChange={setImageCount}
+          quality={outputQuality}
+          onQualityChange={setOutputQuality}
+          aspectRatio={aspectRatio}
+          onAspectRatioChange={setAspectRatio}
+          resolution={resolution}
+          onResolutionChange={setResolution}
           disabled={isGenerating || isQuotaExceeded}
         />
         <SuggestionChips
