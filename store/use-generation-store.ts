@@ -25,7 +25,7 @@ export interface GenerationState {
   setUploadedImage: (image: string | null) => void
   setSelectedStyle: (style: string | null) => void
   
-  addGeneration: (prompt: string, images: string[], quality: OutputQuality, status?: "pending" | "completed", taskIds?: string[]) => void
+  addGeneration: (prompt: string, images: string[], quality: OutputQuality, status?: "pending" | "completed", taskIds?: string[], id?: string) => void
   removeHistoryItem: (id: string) => void
   clearHistory: () => void
   setGenerating: (isGenerating: boolean) => void
@@ -52,9 +52,9 @@ export const useGenerationStore = create<GenerationState>()(
       setGenerating: (isGenerating) => set({ isGenerating }),
       setCurrentGenerations: (currentGenerations) => set({ currentGenerations }),
 
-      addGeneration: (prompt, images, quality, status = "completed", taskIds) => {
+      addGeneration: (prompt, images, quality, status = "completed", taskIds, id) => {
         const newGeneration: Generation = {
-          id: crypto.randomUUID(),
+          id: id || crypto.randomUUID(),
           prompt,
           images,
           quality,
