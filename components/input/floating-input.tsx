@@ -12,11 +12,22 @@ import { OutputQualitySelector } from "./output-quality-selector"
 import { GenerateRequestSchema } from "@/lib/schemas"
 import { STYLE_PACKS } from "@/lib/style-packs"
 import { isLocalEnvironment } from "@/lib/environment"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { useEffect } from "react"
 
 const SUGGESTIONS = Object.keys(STYLE_PACKS)
 
 export function FloatingInput() {
   const [prompt, setPrompt] = useState("")
+  const [showQuotaAlert, setShowQuotaAlert] = useState(false)
   const { generate } = useGenerationActions()
   
   const {
@@ -34,6 +45,12 @@ export function FloatingInput() {
   const quotaRemaining = useQuotaStore((state) => state.quotaRemaining)
   const isLocal = isLocalEnvironment()
   const isQuotaExceeded = quotaRemaining <= 0 && !isLocal
+
+  useEffect(() => {
+    if (isQuotaExceeded) {
+      setShowQuotaAlert(true)
+    }
+  }, [isQuotaExceeded])
 
   const validationResult = GenerateRequestSchema.safeParse({
     base64Images: uploadedImages,
@@ -95,6 +112,27 @@ export function FloatingInput() {
         placeholder={getPlaceholder()}
         disabled={isQuotaExceeded}
       />
+
+      <AlertDialog open={showQuotaAlert} onOpenChange={setShowQuotaAlert}>
+        <AlertDialogContent className="max-w-[400px] rounded-[2rem]">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-semibold tracking-tight">
+              Quota Exhausted
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground leading-relaxed">
+              You have exhausted your generation limits for today. Please come back tomorrow to continue creating high-quality Amazon listings.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction 
+              className="rounded-full bg-primary hover:bg-primary/90 px-8"
+              onClick={() => setShowQuotaAlert(false)}
+            >
+              Close
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
