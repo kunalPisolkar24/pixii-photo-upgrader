@@ -33,14 +33,19 @@ export class APIClient {
     outputQuality: OutputQuality
     base64Image: string | null
     selectedStyle: string | null
-  }): Promise<{ images: string[] }> {
+  }): Promise<{ images: { url?: string; taskId?: string }[] }> {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),
     })
 
-    return this.handleResponse<{ images: string[] }>(response)
+    return this.handleResponse<{ images: { url?: string; taskId?: string }[] }>(response)
+  }
+
+  static async getTaskStatus(taskId: string): Promise<{ state: string; url?: string }> {
+    const response = await fetch(`/api/status?taskId=${taskId}`)
+    return this.handleResponse<{ state: string; url?: string }>(response)
   }
 
   static async getQuota(): Promise<QuotaInfo> {
