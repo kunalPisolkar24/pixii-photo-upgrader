@@ -5,7 +5,7 @@ import {
 } from "@/lib/types"
 
 export const IMAGE_GENERATION_COUNTS = [1, 2, 4] as const
-export const OUTPUT_QUALITIES = ["Low", "Medium", "High", "Test"] as const
+export const OUTPUT_QUALITIES = ["Very Low", "Low", "Medium", "High", "Test"] as const
 
 export const isImageGenerationCount = (value: unknown): value is ImageGenerationCount => {
   return IMAGE_GENERATION_COUNTS.some((count) => count === value)
