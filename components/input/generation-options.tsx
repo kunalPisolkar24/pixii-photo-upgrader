@@ -250,10 +250,10 @@ export function GenerationOptions({
     >
       <Settings2 className="h-4 w-4" />
       <span className="hidden text-xs font-medium sm:inline">Options</span>
-      <span className="text-[10px] font-medium text-muted-foreground/60">
+      <span className="text-[11px] font-semibold text-muted-foreground">
         {quality} • {aspectRatio}
       </span>
-      <ChevronDown className={cn("h-3 w-3 opacity-50 transition-transform", isOpen && "rotate-180")} />
+      <ChevronDown className={cn("h-3 w-3 opacity-70 transition-transform", isOpen && "rotate-180")} />
     </Button>
   )
 
