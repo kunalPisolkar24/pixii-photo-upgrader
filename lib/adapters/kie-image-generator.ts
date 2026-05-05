@@ -1,5 +1,5 @@
 import { QUALITY_MODELS } from "../models"
-import { BASE_PROMPTS } from "../prompts"
+import { buildPrompt } from "../prompts"
 import { uploadToCloudinary } from "../cloudinary"
 import { IImageGenerator, GenerationParams, GenerationResult } from "../interfaces/image-generator.interface"
 
@@ -17,11 +17,7 @@ export class KieImageGenerator implements IImageGenerator {
     )
 
     const generationPromises = Array.from({ length: imageCount }).map(async (_, i) => {
-      const basePrompt = BASE_PROMPTS[i % BASE_PROMPTS.length]
-      let finalPrompt = basePrompt
-      
-      if (selectedStyle) finalPrompt += ` | Style: ${selectedStyle}`
-      if (prompt) finalPrompt += ` | Additional Details: ${prompt}`
+      const finalPrompt = buildPrompt(i, prompt, selectedStyle || undefined)
 
       const input: Record<string, any> = {
         prompt: finalPrompt,
