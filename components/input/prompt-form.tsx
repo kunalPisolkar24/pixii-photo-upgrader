@@ -1,9 +1,9 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 import { Paperclip, Send, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import { compressImage } from "@/lib/image"
 
@@ -31,6 +31,15 @@ export function PromptForm({
   disabled 
 }: PromptFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "inherit"
+      const scrollHeight = textareaRef.current.scrollHeight
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 160)}px`
+    }
+  }, [value])
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
@@ -58,7 +67,6 @@ export function PromptForm({
 
     onImagesUpload([...uploadedImages, ...newImages])
     
-    // Reset input so the same file can be selected again
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
     }
@@ -69,15 +77,24 @@ export function PromptForm({
     onImagesUpload(updated)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      if (isValid && !isGenerating && !disabled) {
+        onSubmit(e as unknown as React.FormEvent)
+      }
+    }
+  }
+
   return (
     <form 
       onSubmit={onSubmit}
       className={cn(
-        "w-full max-w-2xl bg-card rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant/20 flex flex-col p-2 pointer-events-auto transition-all duration-300",
+        "w-full max-w-2xl bg-card rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-outline-variant/20 flex flex-col p-2 pointer-events-auto transition-all duration-300 overflow-hidden",
         uploadedImages.length > 0 && "rounded-[1.5rem]"
       )}
     >
-      <div className="flex items-center gap-2 pl-2">
+      <div className="flex items-end gap-2 pl-2">
         <input
           type="file"
           ref={fileInputRef}
@@ -87,7 +104,7 @@ export function PromptForm({
           onChange={handleFileChange}
         />
         
-        <div className="flex items-center gap-1.5 py-1">
+        <div className="flex items-center gap-1.5 py-1 min-h-[48px]">
           {uploadedImages.map((img, idx) => (
             <div key={idx} className="relative h-10 w-10 shrink-0 group">
               <img 
@@ -119,19 +136,21 @@ export function PromptForm({
           )}
         </div>
 
-        <Input 
+        <Textarea 
+          ref={textareaRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
           disabled={isGenerating || disabled}
           placeholder={placeholder} 
-          className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base h-12 px-2 disabled:opacity-100 disabled:cursor-not-allowed"
+          className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base min-h-[48px] max-h-[160px] py-3 px-2 resize-none disabled:opacity-100 disabled:cursor-not-allowed custom-scrollbar"
         />
 
         <Button 
           type="submit" 
           size="icon" 
           className={cn(
-            "rounded-full shrink-0 w-11 h-11 transition-all",
+            "rounded-full shrink-0 w-11 h-11 mb-0.5 transition-all",
             (!isValid || isGenerating || disabled) 
               ? "bg-muted text-muted-foreground opacity-50 shadow-none cursor-not-allowed" 
               : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 active:scale-95"
