@@ -6,6 +6,8 @@ export const GenerateRequestSchema = z.object({
   prompt: z.string().optional(),
   imageCount: z.union([z.literal(1), z.literal(2), z.literal(4)]),
   outputQuality: z.enum(["High", "Medium", "Low", "Test"]),
+  aspectRatio: z.string().default("auto"),
+  resolution: z.enum(["1k", "2k", "4k"]).default("1k"),
 }).refine((data) => {
   const hasStyle = data.selectedStyle !== null;
   const hasValidPrompt = data.prompt && data.prompt.trim().length >= 20;

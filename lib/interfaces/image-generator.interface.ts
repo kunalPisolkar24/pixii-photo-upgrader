@@ -1,4 +1,4 @@
-import { ImageGenerationCount, OutputQuality } from "../types"
+import { ImageGenerationCount, OutputQuality, AspectRatio, Resolution } from "../types"
 
 export interface GenerationResult {
   url?: string
@@ -11,6 +11,8 @@ export interface GenerationParams {
   outputQuality: OutputQuality
   base64Images: string[]
   selectedStyle: string | null
+  aspectRatio: AspectRatio
+  resolution: Resolution
 }
 
 export interface IImageGenerator {

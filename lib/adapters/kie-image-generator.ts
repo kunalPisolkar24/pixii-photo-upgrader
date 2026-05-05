@@ -30,11 +30,11 @@ export class KieImageGenerator implements IImageGenerator {
 
       if (model === "nano-banana-2" || model === "nano-banana-pro") {
         input.image_input = inputImageUrls
-        input.aspect_ratio = "16:9"
-        input.resolution = "1K"
+        input.aspect_ratio = params.aspectRatio
+        input.resolution = params.resolution.toUpperCase()
       } else if (model === "google/nano-banana-edit") {
         input.image_urls = inputImageUrls
-        input.image_size = "16:9"
+        input.image_size = params.aspectRatio
       }
 
       const response = await fetch(`${this.baseUrl}/createTask`, {

@@ -8,6 +8,8 @@ export function useGenerationActions() {
     outputQuality,
     uploadedImages,
     selectedStyle,
+    aspectRatio,
+    resolution,
     setGenerating,
     addGeneration,
   } = useGenerationStore()
@@ -23,6 +25,8 @@ export function useGenerationActions() {
         outputQuality,
         base64Images: uploadedImages,
         selectedStyle,
+        aspectRatio,
+        resolution,
       })
       
       const allTaskIds = result.images.map(img => img.taskId).filter(Boolean) as string[]
@@ -31,7 +35,16 @@ export function useGenerationActions() {
       const generationId = crypto.randomUUID()
       const status = allTaskIds.length > 0 ? "pending" : "completed"
       
-      addGeneration(prompt, allUrls, outputQuality, status, allTaskIds, generationId)
+      addGeneration({
+        prompt, 
+        images: allUrls, 
+        quality: outputQuality, 
+        aspectRatio,
+        resolution,
+        status, 
+        taskIds: allTaskIds, 
+        id: generationId
+      })
       
       if (allTaskIds.length > 0) {
         startPolling(generationId, allTaskIds)

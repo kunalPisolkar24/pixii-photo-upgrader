@@ -2,7 +2,9 @@ import {
   ImageGenerationCount,
   OutputQuality, 
   QuotaInfo,
-  ApiResponse
+  ApiResponse,
+  AspectRatio,
+  Resolution
 } from "./types"
 
 export class APIClient {
@@ -37,6 +39,8 @@ export class APIClient {
     outputQuality: OutputQuality
     base64Images: string[]
     selectedStyle: string | null
+    aspectRatio: AspectRatio
+    resolution: Resolution
   }): Promise<{ images: { url?: string; taskId?: string }[] }> {
     const response = await fetch("/api/generate", {
       method: "POST",
