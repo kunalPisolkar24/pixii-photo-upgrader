@@ -1,3 +1,4 @@
+import crypto from "crypto"
 import { IImageGenerator, GenerationParams, GenerationResult } from "@/lib/interfaces/image-generator.interface"
 import { KieImageGenerator } from "@/lib/adapters/kie-image-generator"
 
