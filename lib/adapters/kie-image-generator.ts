@@ -21,6 +21,20 @@ export class KieImageGenerator implements IImageGenerator {
       if (selectedStyle) finalPrompt += ` | Style: ${selectedStyle}`
       if (prompt) finalPrompt += ` | Additional Details: ${prompt}`
 
+      const input: Record<string, any> = {
+        prompt: finalPrompt,
+        output_format: "png"
+      }
+
+      if (model === "nano-banana-2" || model === "nano-banana-pro") {
+        input.image_input = [inputImageUrl]
+        input.aspect_ratio = "16:9"
+        input.resolution = "1K"
+      } else if (model === "google/nano-banana-edit") {
+        input.image_urls = [inputImageUrl]
+        input.image_size = "16:9"
+      }
+
       const response = await fetch(`${this.baseUrl}/createTask`, {
         method: "POST",
         headers: {
@@ -30,14 +44,7 @@ export class KieImageGenerator implements IImageGenerator {
         body: JSON.stringify({
           model,
           callBackUrl: this.callbackUrl,
-          input: {
-            prompt: finalPrompt,
-            image_urls: [inputImageUrl],
-            output_format: "png",
-            image_size: "16:9",
-            aspect_ratio: "16:9",
-            resolution: "1K"
-          }
+          input
         })
       })
 
