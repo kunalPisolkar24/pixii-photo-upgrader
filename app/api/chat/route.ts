@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(ApiResponseFactory.error('Valid prompt is required', 400), { status: 400 });
     }
 
-    // Chat is temporarily disabled while migrating away from Puter
+    // Chat is temporarily disabled while migrating to a new provider
     const reply = "Chat is currently undergoing maintenance. Please check back later!";
 
     return NextResponse.json(ApiResponseFactory.success({ reply }));
