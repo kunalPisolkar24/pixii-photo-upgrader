@@ -7,6 +7,8 @@ export interface Generation {
   images: string[]
   quality?: OutputQuality
   createdAt: string
+  status?: "pending" | "completed" | "failed"
+  taskIds?: string[]
 }
 
 export interface QuotaInfo {
