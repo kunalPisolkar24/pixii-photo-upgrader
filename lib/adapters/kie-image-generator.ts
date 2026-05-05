@@ -34,7 +34,9 @@ export class KieImageGenerator implements IImageGenerator {
             prompt: finalPrompt,
             image_urls: [inputImageUrl],
             output_format: "png",
-            image_size: "16:9"
+            image_size: "16:9",
+            aspect_ratio: "16:9",
+            resolution: "1K"
           }
         })
       })
