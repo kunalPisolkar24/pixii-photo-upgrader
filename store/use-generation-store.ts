@@ -25,11 +25,13 @@ export interface GenerationState {
   setUploadedImage: (image: string | null) => void
   setSelectedStyle: (style: string | null) => void
   
-  addGeneration: (prompt: string, images: string[], quality: OutputQuality) => void
+  addGeneration: (prompt: string, images: string[], quality: OutputQuality, status?: "pending" | "completed", taskIds?: string[]) => void
   removeHistoryItem: (id: string) => void
   clearHistory: () => void
   setGenerating: (isGenerating: boolean) => void
   setCurrentGenerations: (images: string[]) => void
+  updateGenerationImages: (id: string, images: string[]) => void
+  updateGenerationStatus: (id: string, status: "pending" | "completed" | "failed") => void
 }
 
 export const useGenerationStore = create<GenerationState>()(
@@ -50,17 +52,38 @@ export const useGenerationStore = create<GenerationState>()(
       setGenerating: (isGenerating) => set({ isGenerating }),
       setCurrentGenerations: (currentGenerations) => set({ currentGenerations }),
 
-      addGeneration: (prompt, images, quality) => {
+      addGeneration: (prompt, images, quality, status = "completed", taskIds) => {
         const newGeneration: Generation = {
           id: crypto.randomUUID(),
           prompt,
           images,
           quality,
           createdAt: new Date().toISOString(),
+          status,
+          taskIds,
         }
         set((state) => ({
           history: [newGeneration, ...state.history],
           currentGenerations: images,
+        }))
+      },
+
+      updateGenerationImages: (id, images) => {
+        set((state) => ({
+          history: state.history.map((item) =>
+            item.id === id ? { ...item, images } : item
+          ),
+          currentGenerations: state.history.find((item) => item.id === id)
+            ? images
+            : state.currentGenerations,
+        }))
+      },
+
+      updateGenerationStatus: (id, status) => {
+        set((state) => ({
+          history: state.history.map((item) =>
+            item.id === id ? { ...item, status } : item
+          ),
         }))
       },
 
