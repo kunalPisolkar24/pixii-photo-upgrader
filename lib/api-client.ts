@@ -16,6 +16,10 @@ export class APIClient {
 
     const json: ApiResponse<T> = await response.json()
     
+    if (response.status === 429) {
+      throw new Error("Rate limit exceeded")
+    }
+
     if (json.error || !response.ok) {
       throw new Error(json.error || `Server error: ${response.status}`)
     }

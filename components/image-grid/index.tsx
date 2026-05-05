@@ -19,22 +19,19 @@ export function ImageGrid() {
     return <SkeletonState />
   }
 
-  if (currentGenerations.length === 0 && uploadedImages.length === 0) {
+  if (currentGenerations.length === 0) {
     return <EmptyState />
   }
-
-  const imagesToDisplay = currentGenerations.length > 0 ? currentGenerations : uploadedImages
-  const isPreview = currentGenerations.length === 0
 
   return (
     <div className="w-full space-y-6">
       <QuotaRow />
-      <div className={getImageGridLayoutClassName(imagesToDisplay.length)}>
-        {imagesToDisplay.map((img, idx) => (
+      <div className={getImageGridLayoutClassName(currentGenerations.length)}>
+        {currentGenerations.map((img, idx) => (
           <ImageCard 
             key={img} 
             src={img} 
-            alt={isPreview ? `Upload ${idx + 1}` : `Generation ${idx + 1}`} 
+            alt={`Generation ${idx + 1}`} 
           />
         ))}
       </div>
