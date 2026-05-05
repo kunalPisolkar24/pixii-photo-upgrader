@@ -90,7 +90,7 @@ export function PromptForm({
     <form 
       onSubmit={onSubmit}
       className={cn(
-        "w-full max-w-xl bg-card rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.12)] border border-outline-variant/20 flex flex-col p-3 sm:p-4 pointer-events-auto transition-all duration-500 ease-out overflow-hidden",
+        "w-full max-w-2xl bg-card rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.12)] border border-outline-variant/20 flex flex-col p-3 sm:p-4 pointer-events-auto transition-all duration-500 ease-out overflow-hidden",
         uploadedImages.length > 0 && "rounded-[2rem]"
       )}
     >
@@ -133,7 +133,7 @@ export function PromptForm({
         onKeyDown={handleKeyDown}
         disabled={isGenerating || disabled}
         placeholder={placeholder} 
-        className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-[15px] sm:text-base min-h-[72px] sm:min-h-[80px] max-h-[200px] px-2 py-1 resize-none disabled:opacity-100 disabled:cursor-not-allowed custom-scrollbar"
+        className="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-[15px] sm:text-base min-h-[24px] max-h-[200px] px-2 py-2 resize-none disabled:opacity-100 disabled:cursor-not-allowed custom-scrollbar"
       />
 
       {/* Action Bar (Bottom Row) */}
