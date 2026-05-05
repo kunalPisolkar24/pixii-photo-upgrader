@@ -116,7 +116,7 @@ export function FloatingInput() {
       />
 
       <AlertDialog open={showQuotaAlert} onOpenChange={setShowQuotaAlert}>
-        <AlertDialogContent className="max-w-[400px] rounded-[2rem]">
+        <AlertDialogContent className="w-[calc(100%-2rem)] max-w-[400px] rounded-[2rem] p-6 sm:p-8">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-xl font-semibold tracking-tight">
               Quota Exhausted
@@ -125,9 +125,9 @@ export function FloatingInput() {
               You have exhausted your generation limits for today. Please come back tomorrow to continue creating high-quality Amazon listings.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="mt-2">
             <AlertDialogAction 
-              className="rounded-full bg-primary hover:bg-primary/90 px-8"
+              className="rounded-full bg-primary hover:bg-primary/90 px-8 h-12 text-base font-medium transition-colors"
               onClick={() => setShowQuotaAlert(false)}
             >
               Close
