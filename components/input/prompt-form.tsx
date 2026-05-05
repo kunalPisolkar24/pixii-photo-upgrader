@@ -90,7 +90,7 @@ export function PromptForm({
     <form 
       onSubmit={onSubmit}
       className={cn(
-        "w-full max-w-2xl bg-card rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.12)] border border-outline-variant/20 flex flex-col p-3 sm:p-4 pointer-events-auto transition-all duration-500 ease-out overflow-hidden",
+        "w-full max-w-xl bg-card rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.12)] border border-outline-variant/20 flex flex-col p-3 sm:p-4 pointer-events-auto transition-all duration-500 ease-out overflow-hidden",
         uploadedImages.length > 0 && "rounded-[2rem]"
       )}
     >
