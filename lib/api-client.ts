@@ -10,8 +10,9 @@ import {
 export class APIClient {
   private static async handleResponse<T>(response: Response): Promise<T> {
     const contentType = response.headers.get("content-type")
-    
-    if (!contentType || !contentType.includes("application/json")) {
+    const isJson = contentType?.includes("application/json")
+
+    if (!isJson) {
       const text = await response.text()
       throw new Error(text || `Unexpected response format: ${response.status}`)
     }
@@ -19,7 +20,7 @@ export class APIClient {
     const json: ApiResponse<T> = await response.json()
     
     if (response.status === 429) {
-      throw new Error("Rate limit exceeded")
+      throw new Error(json.error || "Rate limit exceeded")
     }
 
     if (json.error || !response.ok) {
