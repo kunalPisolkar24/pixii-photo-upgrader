@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Geist_Mono, Inter } from "next/font/google"
 
 import "./globals.css"
@@ -11,6 +12,15 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+
+export const metadata: Metadata = {
+  title: "Pixii Studio",
+  description: "High-performance AI image generation and enhancement studio.",
+  keywords: ["AI", "image generation", "stable diffusion", "Pixii", "photo upgrader"],
+  icons: {
+    icon: "/icon.svg",
+  },
+}
 
 export default function RootLayout({
   children,
