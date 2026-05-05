@@ -117,8 +117,9 @@ export function PromptForm({
               />
               <button
                 type="button"
+                disabled={disabled || isGenerating}
                 onClick={() => removeImage(idx)}
-                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive/90 hover:scale-110 z-10"
+                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-white shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-destructive/90 hover:scale-110 z-10 disabled:cursor-not-allowed disabled:opacity-0"
               >
                 <X className="h-3 w-3" />
               </button>

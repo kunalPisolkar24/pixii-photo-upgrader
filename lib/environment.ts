@@ -1,5 +1,5 @@
 export function isLocalEnvironment(hostname?: string): boolean {
-  if (process.env.FORCE_RATE_LIMIT === "true") {
+  if (process.env.NEXT_PUBLIC_FORCE_RATE_LIMIT === "true") {
     return false
   }
 

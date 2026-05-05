@@ -44,9 +44,14 @@ export function FloatingInput() {
     setUploadedImages
   } = useGenerationStore()
 
+  const { fetchQuota } = useQuotaStore()
   const quotaRemaining = useQuotaStore((state) => state.quotaRemaining)
   const isLocal = isLocalEnvironment()
   const isQuotaExceeded = quotaRemaining <= 0 && !isLocal
+
+  useEffect(() => {
+    fetchQuota()
+  }, [fetchQuota])
 
   useEffect(() => {
     if (isQuotaExceeded) {
