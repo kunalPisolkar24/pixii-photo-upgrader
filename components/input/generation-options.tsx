@@ -45,6 +45,9 @@ interface GenerationOptionsProps {
   onAspectRatioChange: (value: AspectRatio) => void
   resolution: Resolution
   onResolutionChange: (value: Resolution) => void
+  styles: string[]
+  selectedStyle: string | null
+  onStyleSelect: (style: string | null) => void
   disabled?: boolean
 }
 
@@ -80,6 +83,9 @@ export function GenerationOptions({
   onAspectRatioChange,
   resolution,
   onResolutionChange,
+  styles,
+  selectedStyle,
+  onStyleSelect,
   disabled
 }: GenerationOptionsProps) {
   const isMobile = useMediaQuery("(max-width: 640px)")
@@ -89,6 +95,34 @@ export function GenerationOptions({
 
   const OptionsContent = () => (
     <div className="flex flex-col gap-6 p-4 sm:p-2">
+      {/* Styles */}
+      <div className="space-y-3">
+        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+          Visual Style
+        </label>
+        <div className="grid grid-cols-2 gap-2">
+          {styles.map((style) => {
+            const isSelected = selectedStyle === style
+            return (
+              <Button
+                key={style}
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "h-10 rounded-xl border-outline-variant/30 bg-secondary/30 text-[11px]",
+                  isSelected && "border-primary bg-primary/10 text-primary"
+                )}
+                onClick={() => onStyleSelect(isSelected ? null : style)}
+              >
+                {style}
+              </Button>
+            )
+          })}
+        </div>
+      </div>
+
+      <DropdownMenuSeparator className="hidden sm:block" />
+
       {/* Batch Count */}
       <div className="space-y-3">
         <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">

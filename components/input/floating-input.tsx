@@ -4,7 +4,6 @@ import { useState } from "react"
 import { useGenerationStore } from "../../store/use-generation-store"
 import { useQuotaStore } from "../../store/use-quota-store"
 import { useGenerationActions } from "../../hooks/use-generation-actions"
-import { SuggestionChips } from "./suggestion-chips"
 import { PromptForm } from "./prompt-form"
 import { GenerationOptions } from "./generation-options"
 
@@ -97,10 +96,7 @@ export function FloatingInput() {
           onAspectRatioChange={setAspectRatio}
           resolution={resolution}
           onResolutionChange={setResolution}
-          disabled={isGenerating || isQuotaExceeded}
-        />
-        <SuggestionChips
-          suggestions={SUGGESTIONS}
+          styles={SUGGESTIONS}
           selectedStyle={selectedStyle}
           onStyleSelect={setSelectedStyle}
           disabled={isGenerating || isQuotaExceeded}
