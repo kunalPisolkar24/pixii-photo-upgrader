@@ -74,6 +74,29 @@ const MODELS: { value: OutputQuality; label: string; description: string }[] = [
 
 const RESOLUTIONS: Resolution[] = ["1k", "2k", "4k"]
 
+const AspectRatioIcon = ({ ratio, isSelected }: { ratio: AspectRatio; isSelected: boolean }) => {
+  if (ratio === "auto") {
+    return <Sparkles className={cn("h-4 w-4", isSelected ? "text-primary" : "text-muted-foreground/60")} />
+  }
+  
+  const [w, h] = ratio.split(":").map(Number)
+  const isPortrait = h > w
+  const isSquare = w === h
+  
+  return (
+    <div 
+      className={cn(
+        "rounded-[2px] border-[1.5px] transition-colors",
+        isSelected ? "border-primary bg-primary/20" : "border-muted-foreground/40"
+      )}
+      style={{ 
+        width: isSquare ? "14px" : isPortrait ? "12px" : "18px",
+        height: isSquare ? "14px" : isPortrait ? "18px" : "12px",
+      }} 
+    />
+  )
+}
+
 export function GenerationOptions({
   imageCount,
   onImageCountChange,
@@ -196,12 +219,13 @@ export function GenerationOptions({
                 variant="outline"
                 size="sm"
                 className={cn(
-                  "h-10 rounded-xl border-outline-variant/30 bg-secondary/30 text-[11px]",
+                  "flex h-14 flex-col gap-1.5 rounded-xl border-outline-variant/30 bg-secondary/30 p-1 transition-all",
                   isSelected && "border-primary bg-primary/10 text-primary"
                 )}
                 onClick={() => onAspectRatioChange(ratio.value)}
               >
-                {ratio.label}
+                <AspectRatioIcon ratio={ratio.value} isSelected={isSelected} />
+                <span className="text-[10px] font-medium">{ratio.label}</span>
               </Button>
             )
           })}
