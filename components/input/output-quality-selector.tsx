@@ -5,10 +5,8 @@ import { Check, ChevronDown, SlidersHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import {
-  OUTPUT_QUALITIES,
-  type OutputQuality,
-} from "@/store/use-generation-store"
+import { OutputQuality } from "@/lib/types"
+import { OUTPUT_QUALITIES } from "@/store/persistence"
 
 interface OutputQualitySelectorProps {
   value: OutputQuality

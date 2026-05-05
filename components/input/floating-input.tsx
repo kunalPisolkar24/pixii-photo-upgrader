@@ -1,50 +1,66 @@
 "use client"
 
 import { useState } from "react"
-import {
-  useGenerationStore,
-  type GenerationState,
-} from "../../store/use-generation-store"
+import { useGenerationStore } from "../../store/use-generation-store"
+import { useQuotaStore } from "../../store/use-quota-store"
+import { useGenerationActions } from "../../hooks/use-generation-actions"
 import { SuggestionChips } from "./suggestion-chips"
 import { PromptForm } from "./prompt-form"
 import { ImageCountSelector } from "./image-count-selector"
 import { OutputQualitySelector } from "./output-quality-selector"
 
-const SUGGESTIONS = ["Modern Minimal", "Cozy Lifestyle", "Premium Studio"]
+import { GenerateRequestSchema } from "@/lib/schemas"
+import { STYLE_PACKS } from "@/lib/style-packs"
+import { isLocalEnvironment } from "@/lib/environment"
+
+const SUGGESTIONS = Object.keys(STYLE_PACKS)
 
 export function FloatingInput() {
   const [prompt, setPrompt] = useState("")
-  const generate = useGenerationStore(
-    (state: GenerationState) => state.generate
-  )
-  const isGenerating = useGenerationStore(
-    (state: GenerationState) => state.isGenerating
-  )
-  const imageCount = useGenerationStore(
-    (state: GenerationState) => state.imageCount
-  )
-  const setImageCount = useGenerationStore(
-    (state: GenerationState) => state.setImageCount
-  )
-  const outputQuality = useGenerationStore(
-    (state: GenerationState) => state.outputQuality
-  )
-  const setOutputQuality = useGenerationStore(
-    (state: GenerationState) => state.setOutputQuality
-  )
-
-  const quotaRemaining = useGenerationStore((state) => state.quotaRemaining)
-  const isLocalhost = typeof window !== "undefined" && 
-    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  const { generate } = useGenerationActions()
   
-  const isQuotaExceeded = quotaRemaining <= 0 && !isLocalhost
+  const {
+    isGenerating,
+    imageCount,
+    setImageCount,
+    outputQuality,
+    setOutputQuality,
+    selectedStyle,
+    setSelectedStyle,
+    uploadedImage,
+    setUploadedImage
+  } = useGenerationStore()
+
+  const quotaRemaining = useQuotaStore((state) => state.quotaRemaining)
+  const isLocal = isLocalEnvironment()
+  const isQuotaExceeded = quotaRemaining <= 0 && !isLocal
+
+  const validationResult = GenerateRequestSchema.safeParse({
+    base64Image: uploadedImage || "",
+    selectedStyle,
+    prompt,
+    imageCount,
+    outputQuality,
+  })
+
+  const isValid = validationResult.success
+
+  const getPlaceholder = () => {
+    if (isQuotaExceeded) return "Quota exceeded for today"
+    if (!uploadedImage) return "Attach an image first..."
+    if (!isValid) return "Select a style or type 20+ chars..."
+    return "Describe your custom background..."
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!prompt.trim() || isGenerating || isQuotaExceeded) return
+    if (!isValid || isGenerating || isQuotaExceeded) return
+    
     const currentPrompt = prompt
     setPrompt("")
     await generate(currentPrompt)
+    setUploadedImage(null)
+    setSelectedStyle(null)
   }
 
   return (
@@ -62,7 +78,8 @@ export function FloatingInput() {
         />
         <SuggestionChips
           suggestions={SUGGESTIONS}
-          onSelect={setPrompt}
+          selectedStyle={selectedStyle}
+          onStyleSelect={setSelectedStyle}
           disabled={isGenerating || isQuotaExceeded}
         />
       </div>
@@ -72,6 +89,10 @@ export function FloatingInput() {
         onChange={setPrompt}
         onSubmit={handleSubmit}
         isGenerating={isGenerating}
+        uploadedImage={uploadedImage}
+        onImageUpload={setUploadedImage}
+        isValid={isValid}
+        placeholder={getPlaceholder()}
         disabled={isQuotaExceeded}
       />
     </div>

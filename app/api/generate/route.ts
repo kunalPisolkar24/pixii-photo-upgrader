@@ -1,22 +1,25 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { GenerateRequestSchema } from "@/lib/schemas"
+import { GenerationService } from "@/lib/services/generation.service"
+import { ApiResponseFactory } from "@/lib/api-response-factory"
+
+export const maxDuration = 60
 
 export async function POST(request: NextRequest) {
-  const { imageCount } = await request.json()
+  try {
+    const body = await request.json()
+    const validatedData = GenerateRequestSchema.parse(body)
+    
+    const generatedImages = await GenerationService.generate(validatedData)
 
-  // Mock processing delay
-  await new Promise((resolve) => setTimeout(resolve, 3000))
-
-  const mockImages = [
-    `https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800`,
-    `https://images.unsplash.com/photo-1774624513295-a0bac2eb4661?q=80&w=870&auto=format`,
-    `https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800`,
-    `https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&q=80&w=800`,
-  ]
-
-  const generatedImages = mockImages.slice(0, imageCount || 4)
-
-  return NextResponse.json({
-    images: generatedImages,
-  })
+    return NextResponse.json(ApiResponseFactory.success({ images: generatedImages }))
+  } catch (error) {
+    console.error("Generation route error:", error)
+    
+    const message = error instanceof Error ? error.message : "Failed to generate images"
+    const status = error instanceof Error && "name" in error && error.name === "ZodError" ? 400 : 500
+    
+    return NextResponse.json(ApiResponseFactory.error(message, status), { status })
+  }
 }

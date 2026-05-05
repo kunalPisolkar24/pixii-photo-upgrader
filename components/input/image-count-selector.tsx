@@ -5,7 +5,7 @@ import { Columns2, Grid2X2, Square } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import type { ImageGenerationCount } from "@/store/use-generation-store"
+import type { ImageGenerationCount } from "@/lib/types"
 
 interface ImageCountSelectorProps {
   value: ImageGenerationCount

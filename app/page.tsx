@@ -6,9 +6,13 @@ import { HistoryDrawer } from "@/components/history"
 import { ImageGrid } from "@/components/image-grid"
 import { FloatingInput } from "@/components/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useAppInitialization } from "@/hooks/use-app-initialization"
 
 export default function Page() {
   const [historyOpen, setHistoryOpen] = useState(false)
+  
+  // Encapsulated initialization logic
+  useAppInitialization()
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background selection:bg-primary/10 selection:text-primary">

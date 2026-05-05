@@ -1,25 +1,55 @@
 import { Ratelimit } from "@upstash/ratelimit"
-import { redis } from "../infrastructure/redis"
+import { getRedis } from "../infrastructure/redis"
+import { isLocalEnvironment } from "../environment"
 
-export const ratelimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(3, "24 h"),
-  analytics: true,
-})
+const LIMIT = 3
 
-export async function checkRateLimit(ip: string) {
-  const isLocal = ip === "127.0.0.1" || ip === "::1" || ip === "localhost"
-  
-  const result = await ratelimit.limit(ip)
-  
-  if (isLocal) {
-    return {
-      success: true,
-      limit: result.limit,
-      remaining: result.remaining,
-      reset: result.reset,
-    }
+let ratelimit: Ratelimit | null = null
+
+function getRatelimit() {
+  if (ratelimit) {
+    return ratelimit
   }
 
-  return result
+  ratelimit = new Ratelimit({
+    redis: getRedis(),
+    limiter: Ratelimit.slidingWindow(LIMIT, "24 h"),
+    analytics: true,
+  })
+
+  return ratelimit
+}
+
+export function getLocalRateLimitResult() {
+  return {
+    success: true,
+    limit: LIMIT,
+    remaining: LIMIT,
+    reset: 0,
+    pending: Promise.resolve(),
+  }
+}
+
+export async function getRemainingQuota(ip: string, hostname?: string) {
+  if (isLocalEnvironment(hostname)) {
+    const { limit, remaining, reset } = getLocalRateLimitResult()
+    return { limit, remaining, reset }
+  }
+
+  const { limit, remaining, reset } = await getRatelimit().getRemaining(ip)
+  return { limit, remaining, reset }
+}
+
+export async function checkRateLimit(ip: string, hostname?: string) {
+  if (isLocalEnvironment(hostname)) {
+    return getLocalRateLimitResult()
+  }
+
+  try {
+    return await getRatelimit().limit(ip)
+  } catch (error) {
+    console.error("[RateLimiter] Redis error:", error)
+    // Fail open — allow the request but log the failure
+    return { ...getLocalRateLimitResult(), success: true }
+  }
 }
