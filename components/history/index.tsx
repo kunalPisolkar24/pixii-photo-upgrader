@@ -56,6 +56,7 @@ export function HistoryDrawer({ open, onOpenChange }: HistoryDrawerProps) {
                   images={item.images} 
                   status={item.status}
                   quality={item.quality}
+                  taskIds={item.taskIds}
                 />
               ))}
               

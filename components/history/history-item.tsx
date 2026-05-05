@@ -24,9 +24,10 @@ interface HistoryItemProps {
   images: string[]
   status?: "pending" | "completed" | "failed"
   quality?: string
+  taskIds?: string[]
 }
 
-export function HistoryItem({ id, prompt, images, status, quality }: HistoryItemProps) {
+export function HistoryItem({ id, prompt, images, status, quality, taskIds = [] }: HistoryItemProps) {
   const removeHistoryItem = useGenerationStore((state) => state.removeHistoryItem)
 
   return (
@@ -78,7 +79,7 @@ export function HistoryItem({ id, prompt, images, status, quality }: HistoryItem
       </div>
       <div className="grid grid-cols-2 gap-2 xs:grid-cols-4">
         {status === "pending" && images.length === 0 ? (
-          Array.from({ length: 4 }).map((_, i) => (
+          Array.from({ length: taskIds.length || 1 }).map((_, i) => (
             <div 
               key={i} 
               className="relative aspect-square rounded-lg bg-muted animate-pulse border border-outline-variant/10 flex items-center justify-center"
