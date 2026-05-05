@@ -6,7 +6,7 @@ export function useGenerationActions() {
   const {
     imageCount,
     outputQuality,
-    uploadedImage,
+    uploadedImages,
     selectedStyle,
     setGenerating,
     addGeneration,
@@ -21,7 +21,7 @@ export function useGenerationActions() {
         prompt,
         imageCount,
         outputQuality,
-        base64Image: uploadedImage,
+        base64Images: uploadedImages,
         selectedStyle,
       })
       

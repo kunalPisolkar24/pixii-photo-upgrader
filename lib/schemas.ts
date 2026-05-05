@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const GenerateRequestSchema = z.object({
-  base64Image: z.string().min(1, "An input image is required."),
+  base64Images: z.array(z.string()).min(1, "At least one input image is required.").max(3, "Maximum 3 images allowed."),
   selectedStyle: z.string().nullable(),
   prompt: z.string().optional(),
   imageCount: z.union([z.literal(1), z.literal(2), z.literal(4)]),

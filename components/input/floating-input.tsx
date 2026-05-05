@@ -27,8 +27,8 @@ export function FloatingInput() {
     setOutputQuality,
     selectedStyle,
     setSelectedStyle,
-    uploadedImage,
-    setUploadedImage
+    uploadedImages,
+    setUploadedImages
   } = useGenerationStore()
 
   const quotaRemaining = useQuotaStore((state) => state.quotaRemaining)
@@ -36,7 +36,7 @@ export function FloatingInput() {
   const isQuotaExceeded = quotaRemaining <= 0 && !isLocal
 
   const validationResult = GenerateRequestSchema.safeParse({
-    base64Image: uploadedImage || "",
+    base64Images: uploadedImages,
     selectedStyle,
     prompt,
     imageCount,
@@ -47,7 +47,7 @@ export function FloatingInput() {
 
   const getPlaceholder = () => {
     if (isQuotaExceeded) return "Quota exceeded for today"
-    if (!uploadedImage) return "Attach an image first..."
+    if (uploadedImages.length === 0) return "Attach an image first..."
     if (!isValid) return "Select a style or type 20+ chars..."
     return "Describe your custom background..."
   }
@@ -59,7 +59,7 @@ export function FloatingInput() {
     const currentPrompt = prompt
     setPrompt("")
     await generate(currentPrompt)
-    setUploadedImage(null)
+    setUploadedImages([])
     setSelectedStyle(null)
   }
 
@@ -89,8 +89,8 @@ export function FloatingInput() {
         onChange={setPrompt}
         onSubmit={handleSubmit}
         isGenerating={isGenerating}
-        uploadedImage={uploadedImage}
-        onImageUpload={setUploadedImage}
+        uploadedImages={uploadedImages}
+        onImagesUpload={setUploadedImages}
         isValid={isValid}
         placeholder={getPlaceholder()}
         disabled={isQuotaExceeded}

@@ -31,7 +31,7 @@ export class APIClient {
     prompt: string
     imageCount: ImageGenerationCount
     outputQuality: OutputQuality
-    base64Image: string | null
+    base64Images: string[]
     selectedStyle: string | null
   }): Promise<{ images: { url?: string; taskId?: string }[] }> {
     const response = await fetch("/api/generate", {

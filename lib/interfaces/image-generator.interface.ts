@@ -9,7 +9,7 @@ export interface GenerationParams {
   prompt?: string
   imageCount: ImageGenerationCount
   outputQuality: OutputQuality
-  base64Image: string
+  base64Images: string[]
   selectedStyle: string | null
 }
 

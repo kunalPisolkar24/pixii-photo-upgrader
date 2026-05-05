@@ -16,13 +16,13 @@ export interface GenerationState {
   currentGenerations: string[]
   imageCount: ImageGenerationCount
   outputQuality: OutputQuality
-  uploadedImage: string | null
+  uploadedImages: string[]
   selectedStyle: string | null
   history: Generation[]
   
   setImageCount: (count: ImageGenerationCount) => void
   setOutputQuality: (quality: OutputQuality) => void
-  setUploadedImage: (image: string | null) => void
+  setUploadedImages: (images: string[]) => void
   setSelectedStyle: (style: string | null) => void
   
   addGeneration: (prompt: string, images: string[], quality: OutputQuality, status?: "pending" | "completed", taskIds?: string[], id?: string) => void
@@ -41,13 +41,13 @@ export const useGenerationStore = create<GenerationState>()(
       currentGenerations: [],
       imageCount: 4,
       outputQuality: "Medium",
-      uploadedImage: null,
+      uploadedImages: [],
       selectedStyle: null,
       history: [],
 
       setImageCount: (imageCount) => set({ imageCount }),
       setOutputQuality: (outputQuality) => set({ outputQuality }),
-      setUploadedImage: (uploadedImage) => set({ uploadedImage }),
+      setUploadedImages: (uploadedImages) => set({ uploadedImages }),
       setSelectedStyle: (selectedStyle) => set({ selectedStyle }),
       setGenerating: (isGenerating) => set({ isGenerating }),
       setCurrentGenerations: (currentGenerations) => set({ currentGenerations }),

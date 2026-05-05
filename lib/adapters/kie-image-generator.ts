@@ -9,10 +9,12 @@ export class KieImageGenerator implements IImageGenerator {
   private readonly baseUrl = "https://api.kie.ai/api/v1/jobs"
 
   async generate(params: GenerationParams): Promise<GenerationResult[]> {
-    const { prompt, imageCount, outputQuality, base64Image, selectedStyle } = params
+    const { prompt, imageCount, outputQuality, base64Images, selectedStyle } = params
     const model = QUALITY_MODELS[outputQuality]
     
-    const inputImageUrl = await uploadToCloudinary(base64Image, "pixii-uploads")
+    const inputImageUrls = await Promise.all(
+      base64Images.map(img => uploadToCloudinary(img, "pixii-uploads"))
+    )
 
     const generationPromises = Array.from({ length: imageCount }).map(async (_, i) => {
       const basePrompt = BASE_PROMPTS[i % BASE_PROMPTS.length]
@@ -27,11 +29,11 @@ export class KieImageGenerator implements IImageGenerator {
       }
 
       if (model === "nano-banana-2" || model === "nano-banana-pro") {
-        input.image_input = [inputImageUrl]
+        input.image_input = inputImageUrls
         input.aspect_ratio = "16:9"
         input.resolution = "1K"
       } else if (model === "google/nano-banana-edit") {
-        input.image_urls = [inputImageUrl]
+        input.image_urls = inputImageUrls
         input.image_size = "16:9"
       }
 
