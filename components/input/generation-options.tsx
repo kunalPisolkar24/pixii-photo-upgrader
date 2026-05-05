@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -291,9 +292,9 @@ export function GenerationOptions({
           <DrawerHeader className="text-left">
             <DrawerTitle className="px-4 text-xl font-bold tracking-tight">Generation Settings</DrawerTitle>
           </DrawerHeader>
-          <div className="max-h-[70vh] overflow-y-auto px-4 pb-8">
+          <ScrollArea className="h-[70vh] w-full px-4 pb-8">
             <OptionsContent />
-          </div>
+          </ScrollArea>
         </DrawerContent>
       </Drawer>
     )
@@ -308,9 +309,13 @@ export function GenerationOptions({
         align="center" 
         side="top" 
         sideOffset={12}
-        className="w-[320px] rounded-[1.5rem] border-outline-variant/30 bg-card/95 p-2 shadow-2xl backdrop-blur-xl"
+        className="w-[320px] rounded-[1.5rem] border-outline-variant/30 bg-card/95 p-0 shadow-2xl backdrop-blur-xl"
       >
-        <OptionsContent />
+        <ScrollArea className="h-[480px] w-full">
+          <div className="p-2">
+            <OptionsContent />
+          </div>
+        </ScrollArea>
       </DropdownMenuContent>
     </DropdownMenu>
   )
