@@ -6,7 +6,7 @@ export const GenerateRequestSchema = z.object({
   prompt: z.string().optional(),
   imageCount: z.union([z.literal(1), z.literal(2), z.literal(4)]),
   outputQuality: z.enum(["High", "Medium", "Low", "Test"]),
-  aspectRatio: z.string().default("auto"),
+  aspectRatio: z.enum(["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9", "auto"]).default("auto"),
   resolution: z.enum(["1k", "2k", "4k"]).default("1k"),
 }).refine((data) => {
   const hasStyle = data.selectedStyle !== null;
