@@ -16,8 +16,8 @@ export function EmptyState() {
             Start creating
           </h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Describe your product background below to generate high-quality
-            Amazon listings instantly.
+            Describe your creative vision below to generate, enhance, and transform
+            high-quality images instantly.
           </p>
         </div>
       </div>

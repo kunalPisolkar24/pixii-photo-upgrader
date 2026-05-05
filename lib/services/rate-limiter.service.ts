@@ -31,25 +31,28 @@ export function getLocalRateLimitResult() {
 }
 
 export async function getRemainingQuota(ip: string, hostname?: string) {
-  if (isLocalEnvironment(hostname)) {
-    const { limit, remaining, reset } = getLocalRateLimitResult()
+  try {
+    const { limit, remaining, reset } = await getRatelimit().getRemaining(ip)
     return { limit, remaining, reset }
+  } catch (error) {
+    console.error("[RateLimiter] Redis fetch error:", error)
+    return getLocalRateLimitResult()
   }
-
-  const { limit, remaining, reset } = await getRatelimit().getRemaining(ip)
-  return { limit, remaining, reset }
 }
 
 export async function checkRateLimit(ip: string, hostname?: string) {
-  if (isLocalEnvironment(hostname)) {
-    return getLocalRateLimitResult()
-  }
+  const isLocal = isLocalEnvironment(hostname)
 
   try {
-    return await getRatelimit().limit(ip)
+    const result = await getRatelimit().limit(ip)
+    
+    if (isLocal) {
+      return { ...result, success: true }
+    }
+    
+    return result
   } catch (error) {
-    console.error("[RateLimiter] Redis error:", error)
-    // Fail open — allow the request but log the failure
+    console.error("[RateLimiter] Redis limit error:", error)
     return { ...getLocalRateLimitResult(), success: true }
   }
 }

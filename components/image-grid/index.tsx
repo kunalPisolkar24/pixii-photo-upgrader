@@ -10,8 +10,12 @@ import { QuotaRow } from "./quota-row"
 export function ImageGrid() {
   const currentGenerations = useGenerationStore((state) => state.currentGenerations)
   const isGenerating = useGenerationStore((state) => state.isGenerating)
+  const uploadedImages = useGenerationStore((state) => state.uploadedImages)
+  const latestHistoryItem = useGenerationStore((state) => state.history[0])
+  
+  const isLoading = isGenerating || (latestHistoryItem?.status === "pending")
 
-  if (isGenerating) {
+  if (isLoading) {
     return <SkeletonState />
   }
 
@@ -24,7 +28,11 @@ export function ImageGrid() {
       <QuotaRow />
       <div className={getImageGridLayoutClassName(currentGenerations.length)}>
         {currentGenerations.map((img, idx) => (
-          <ImageCard key={img} src={img} alt={`Generation ${idx + 1}`} />
+          <ImageCard 
+            key={img} 
+            src={img} 
+            alt={`Generation ${idx + 1}`} 
+          />
         ))}
       </div>
     </div>

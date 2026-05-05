@@ -22,9 +22,12 @@ interface HistoryItemProps {
   id: string
   prompt: string
   images: string[]
+  status?: "pending" | "completed" | "failed"
+  quality?: string
+  taskIds?: string[]
 }
 
-export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
+export function HistoryItem({ id, prompt, images, status, quality, taskIds = [] }: HistoryItemProps) {
   const removeHistoryItem = useGenerationStore((state) => state.removeHistoryItem)
 
   return (
@@ -75,20 +78,31 @@ export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2 xs:grid-cols-4">
-        {images.map((img) => (
-          <div 
-            key={img} 
-            className="relative aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
-          >
-            <Image 
-              src={getOptimizedCloudinaryUrl(img, 400, 400)} 
-              alt="" 
-              fill
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 150px"
-              className="object-cover"
-            />
-          </div>
-        ))}
+        {status === "pending" && images.length === 0 ? (
+          Array.from({ length: taskIds.length || 1 }).map((_, i) => (
+            <div 
+              key={i} 
+              className="relative aspect-square rounded-lg bg-muted animate-pulse border border-outline-variant/10 flex items-center justify-center"
+            >
+              <div className="w-6 h-6 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+            </div>
+          ))
+        ) : (
+          images.map((img) => (
+            <div 
+              key={img} 
+              className="relative aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
+            >
+              <Image 
+                src={getOptimizedCloudinaryUrl(img, 400, 400)} 
+                alt="" 
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 150px"
+                className="object-cover"
+              />
+            </div>
+          ))
+        )}
       </div>
     </div>
   )

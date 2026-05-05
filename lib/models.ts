@@ -1,8 +1,8 @@
 import { OutputQuality } from "@/lib/types"
 
 export const QUALITY_MODELS: Record<OutputQuality, string> = {
-  "High": "gemini-3-pro-image-preview",
-  "Medium": "gemini-3.1-flash-image-preview",
-  "Low": "gemini-2.5-flash-image",
-  "Test": "gpt-image-1.5",
+  "High": "nano-banana-2",
+  "Medium": "nano-banana-pro",
+  "Low": "google/nano-banana-edit",
+  "Test": "nano-banana-pro",
 }

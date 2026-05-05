@@ -1,7 +1,10 @@
 export function isLocalEnvironment(hostname?: string): boolean {
-  // Allow forcing rate limiting in dev for testing
-  if (process.env.FORCE_RATE_LIMIT === "true") {
+  if (process.env.NEXT_PUBLIC_FORCE_RATE_LIMIT === "true") {
     return false
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    return true
   }
 
   if (typeof window !== "undefined") {
@@ -17,5 +20,5 @@ export function isLocalEnvironment(hostname?: string): boolean {
     return hostname === "localhost" || hostname === "127.0.0.1"
   }
 
-  return process.env.NODE_ENV === "development"
+  return false
 }
