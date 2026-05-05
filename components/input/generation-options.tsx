@@ -67,11 +67,11 @@ const ASPECT_RATIOS: { value: AspectRatio; label: string; description: string }[
 ]
 
 const MODELS: { value: OutputQuality; label: string; description: string }[] = [
-  { value: "High", label: "High Quality", description: "Nano Banana 2" },
-  { value: "Medium", label: "Balanced", description: "Nano Banana Pro" },
-  { value: "Low", label: "Fast", description: "Nano Banana Edit" },
-  { value: "Test", label: "Test", description: "Low cost preview" },
-]
+  { value: "High" as OutputQuality, label: "High Quality", description: "Nano Banana 2" },
+  { value: "Medium" as OutputQuality, label: "Balanced", description: "Nano Banana Pro" },
+  { value: "Low" as OutputQuality, label: "Fast", description: "Nano Banana Edit" },
+  { value: "Test" as OutputQuality, label: "Test", description: "Low cost preview" },
+].filter(model => process.env.NODE_ENV === "development" || model.value !== "Test")
 
 const RESOLUTIONS: Resolution[] = ["1k", "2k", "4k"]
 
