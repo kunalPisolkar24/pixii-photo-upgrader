@@ -1,177 +1,118 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-
-export interface Generation {
-  id: string
-  prompt: string
-  images: string[]
-  quality?: OutputQuality
-  createdAt: string
-}
-
-export type ImageGenerationCount = 1 | 2 | 4
-export type OutputQuality =
-  | "Very Low"
-  | "Low"
-  | "Medium"
-  | "High"
-  | "Extra High"
+import { 
+  Generation, 
+  ImageGenerationCount, 
+  OutputQuality,
+  AspectRatio,
+  Resolution 
+} from "@/lib/types"
+import { 
+  getPersistedHistory, 
+  getPersistedImageCount, 
+  getPersistedOutputQuality 
+} from "./persistence"
 
 export interface GenerationState {
   isGenerating: boolean
   currentGenerations: string[]
   imageCount: ImageGenerationCount
   outputQuality: OutputQuality
+  uploadedImages: string[]
+  selectedStyle: string | null
+  aspectRatio: AspectRatio
+  resolution: Resolution
   history: Generation[]
-  quotaRemaining: number
-  quotaLimit: number
+  
   setImageCount: (count: ImageGenerationCount) => void
   setOutputQuality: (quality: OutputQuality) => void
-  generate: (prompt: string) => Promise<void>
-  fetchQuota: () => Promise<void>
+  setUploadedImages: (images: string[]) => void
+  setSelectedStyle: (style: string | null) => void
+  setAspectRatio: (ratio: AspectRatio) => void
+  setResolution: (res: Resolution) => void
+  
+  addGeneration: (params: {
+    prompt: string, 
+    images: string[], 
+    quality: OutputQuality, 
+    aspectRatio: AspectRatio, 
+    resolution: Resolution,
+    status?: "pending" | "completed", 
+    taskIds?: string[], 
+    id?: string
+  }) => void
   removeHistoryItem: (id: string) => void
   clearHistory: () => void
-}
-
-export const IMAGE_GENERATION_COUNTS = [1, 2, 4] as const
-export const OUTPUT_QUALITIES = [
-  "Very Low",
-  "Low",
-  "Medium",
-  "High",
-  "Extra High",
-] as const
-
-const isImageGenerationCount = (
-  value: unknown
-): value is ImageGenerationCount => {
-  return IMAGE_GENERATION_COUNTS.some((count) => count === value)
-}
-
-const isOutputQuality = (value: unknown): value is OutputQuality => {
-  return OUTPUT_QUALITIES.some((quality) => quality === value)
-}
-
-const isGeneration = (value: unknown): value is Generation => {
-  if (!value || typeof value !== "object") return false
-
-  const generation = value as Partial<Generation>
-
-  return (
-    typeof generation.id === "string" &&
-    typeof generation.prompt === "string" &&
-    typeof generation.createdAt === "string" &&
-    Array.isArray(generation.images) &&
-    generation.images.every((image) => typeof image === "string")
-  )
-}
-
-const getPersistedHistory = (persistedState: unknown): Generation[] => {
-  if (!persistedState || typeof persistedState !== "object") return []
-
-  const { history } = persistedState as { history?: unknown }
-
-  return Array.isArray(history) ? history.filter(isGeneration) : []
-}
-
-const getPersistedImageCount = (
-  persistedState: unknown
-): ImageGenerationCount => {
-  if (!persistedState || typeof persistedState !== "object") return 4
-
-  const { imageCount } = persistedState as { imageCount?: unknown }
-
-  return isImageGenerationCount(imageCount) ? imageCount : 4
-}
-
-const getPersistedOutputQuality = (persistedState: unknown): OutputQuality => {
-  if (!persistedState || typeof persistedState !== "object") return "Medium"
-
-  const { outputQuality } = persistedState as { outputQuality?: unknown }
-
-  return isOutputQuality(outputQuality) ? outputQuality : "Medium"
+  setGenerating: (isGenerating: boolean) => void
+  setCurrentGenerations: (images: string[]) => void
+  updateGenerationImages: (id: string, images: string[]) => void
+  updateGenerationStatus: (id: string, status: "pending" | "completed" | "failed") => void
 }
 
 export const useGenerationStore = create<GenerationState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       isGenerating: false,
       currentGenerations: [],
       imageCount: 4,
       outputQuality: "Medium",
+      uploadedImages: [],
+      selectedStyle: null,
+      aspectRatio: "auto",
+      resolution: "1k",
       history: [],
-      quotaRemaining: 3,
-      quotaLimit: 3,
-      setImageCount: (imageCount: ImageGenerationCount) => set({ imageCount }),
-      setOutputQuality: (outputQuality: OutputQuality) =>
-        set({ outputQuality }),
-      fetchQuota: async () => {
-        try {
-          const res = await fetch("/api/quota")
-          if (res.ok) {
-            const data = await res.json()
-            set({ quotaRemaining: data.remaining, quotaLimit: data.limit })
-          }
-        } catch (error) {
-          // Error handling
+
+      setImageCount: (imageCount) => set({ imageCount }),
+      setOutputQuality: (outputQuality) => set({ outputQuality }),
+      setUploadedImages: (uploadedImages) => set({ uploadedImages }),
+      setSelectedStyle: (selectedStyle) => set({ selectedStyle }),
+      setAspectRatio: (aspectRatio) => set({ aspectRatio }),
+      setResolution: (resolution) => set({ resolution }),
+      setGenerating: (isGenerating) => set({ isGenerating }),
+      setCurrentGenerations: (currentGenerations) => set({ currentGenerations }),
+
+      addGeneration: ({ prompt, images, quality, aspectRatio, resolution, status = "completed", taskIds, id }) => {
+        const newGeneration: Generation = {
+          id: id || crypto.randomUUID(),
+          prompt,
+          images,
+          quality,
+          aspectRatio,
+          resolution,
+          createdAt: new Date().toISOString(),
+          status,
+          taskIds,
         }
+        set((state) => ({
+          history: [newGeneration, ...state.history],
+          currentGenerations: images,
+        }))
       },
-      generate: async (prompt: string) => {
-        const { imageCount, outputQuality } = get()
 
-        set({ isGenerating: true })
-
-        try {
-          const response = await fetch("/api/generate", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              prompt,
-              imageCount,
-              outputQuality,
-            }),
-          })
-
-          if (!response.ok) {
-            if (response.status === 429) {
-              // Handle rate limit
-              await get().fetchQuota()
-              set({ isGenerating: false })
-              return
-            }
-            throw new Error("Failed to generate images")
-          }
-
-          const data = await response.json()
-          const generatedImages = data.images
-
-          const newGeneration: Generation = {
-            id: Math.random().toString(36).substring(7),
-            prompt,
-            images: generatedImages,
-            quality: outputQuality,
-            createdAt: new Date().toISOString(),
-          }
-
-          set({
-            isGenerating: false,
-            currentGenerations: generatedImages,
-            history: [newGeneration, ...get().history],
-          })
-        } catch (error) {
-          set({ isGenerating: false })
-          console.error("Generation error:", error)
-        } finally {
-          // Refresh quota after generation attempt
-          await get().fetchQuota()
-        }
+      updateGenerationImages: (id, images) => {
+        set((state) => ({
+          history: state.history.map((item) =>
+            item.id === id ? { ...item, images } : item
+          ),
+          currentGenerations: state.history.find((item) => item.id === id)
+            ? images
+            : state.currentGenerations,
+        }))
       },
-      removeHistoryItem: (id: string) =>
+
+      updateGenerationStatus: (id, status) => {
+        set((state) => ({
+          history: state.history.map((item) =>
+            item.id === id ? { ...item, status } : item
+          ),
+        }))
+      },
+
+      removeHistoryItem: (id) =>
         set((state) => ({
           history: state.history.filter((item) => item.id !== id),
         })),
+
       clearHistory: () => set({ history: [] }),
     }),
     {
@@ -180,6 +121,8 @@ export const useGenerationStore = create<GenerationState>()(
         history: state.history,
         imageCount: state.imageCount,
         outputQuality: state.outputQuality,
+        aspectRatio: state.aspectRatio,
+        resolution: state.resolution,
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,

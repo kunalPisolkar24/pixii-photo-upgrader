@@ -1,0 +1,64 @@
+import { QUALITY_MODELS } from "../models"
+import { buildPrompt } from "../prompts"
+import { uploadToCloudinary } from "../cloudinary"
+import { IImageGenerator, GenerationParams, GenerationResult } from "../interfaces/image-generator.interface"
+
+export class KieImageGenerator implements IImageGenerator {
+  private readonly apiKey = process.env.KIE_AI_API_KEY
+  private readonly callbackUrl = process.env.KIE_AI_CALLBACK_URL
+  private readonly baseUrl = "https://api.kie.ai/api/v1/jobs"
+
+  async generate(params: GenerationParams): Promise<GenerationResult[]> {
+    const { prompt, imageCount, outputQuality, base64Images, selectedStyle } = params
+    const model = QUALITY_MODELS[outputQuality]
+    
+    const inputImageUrls = await Promise.all(
+      base64Images.map(img => uploadToCloudinary(img, "pixii-uploads"))
+    )
+
+    const generationPromises = Array.from({ length: imageCount }).map(async (_, i) => {
+      const finalPrompt = buildPrompt(i, prompt, selectedStyle || undefined)
+
+      const input: Record<string, any> = {
+        prompt: finalPrompt,
+        output_format: "png"
+      }
+
+      if (model === "nano-banana-2" || model === "nano-banana-pro") {
+        input.image_input = inputImageUrls
+        input.aspect_ratio = params.aspectRatio
+        input.resolution = params.resolution.toUpperCase()
+      } else if (model === "google/nano-banana-edit") {
+        input.image_urls = inputImageUrls
+        input.image_size = params.aspectRatio
+      }
+
+      const response = await fetch(`${this.baseUrl}/createTask`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${this.apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          callBackUrl: this.callbackUrl,
+          input
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.msg || `Kie AI request failed with status ${response.status}`)
+      }
+
+      const result = await response.json()
+      if (result.code !== 200 || !result.data?.taskId) {
+        throw new Error(result.msg || "Failed to create Kie AI task")
+      }
+
+      return { taskId: result.data.taskId }
+    })
+
+    return Promise.all(generationPromises)
+  }
+}

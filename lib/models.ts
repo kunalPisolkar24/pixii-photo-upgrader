@@ -1,9 +1,8 @@
-import { OutputQuality } from "@/store/use-generation-store"
+import { OutputQuality } from "@/lib/types"
 
 export const QUALITY_MODELS: Record<OutputQuality, string> = {
-  "Extra High": "google/gemini-3-pro-image-preview",
-  "High": "google/gemini-2.5-flash-image",
-  "Medium": "openai/gpt-5-image",
-  "Low": "openai/gpt-5-image-mini",
-  "Very Low": "",
+  "High": "nano-banana-2",
+  "Medium": "nano-banana-pro",
+  "Low": "google/nano-banana-edit",
+  "Test": "nano-banana-pro",
 }

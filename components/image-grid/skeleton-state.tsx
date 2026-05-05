@@ -1,10 +1,7 @@
 "use client"
 
 import { Aperture } from "lucide-react"
-import {
-  useGenerationStore,
-  type GenerationState,
-} from "@/store/use-generation-store"
+import { useGenerationStore } from "@/store/use-generation-store"
 import { getImageGridLayoutClassName } from "./grid-layout"
 import { QuotaRow } from "./quota-row"
 
@@ -16,9 +13,7 @@ const LOADING_STEPS = [
 ]
 
 export function SkeletonState() {
-  const imageCount = useGenerationStore(
-    (state: GenerationState) => state.imageCount
-  )
+  const imageCount = useGenerationStore((state) => state.imageCount)
   const loadingSteps = LOADING_STEPS.slice(0, imageCount)
 
   return (

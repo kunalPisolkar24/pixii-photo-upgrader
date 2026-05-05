@@ -1,8 +1,11 @@
 "use client"
 
-import { Download, Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useGenerationStore } from "@/store/use-generation-store"
+import { getOptimizedCloudinaryUrl } from "@/lib/cloudinary-url"
+import { ImageExportMenu } from "@/components/image-export-menu"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,22 +22,30 @@ interface HistoryItemProps {
   id: string
   prompt: string
   images: string[]
+  status?: "pending" | "completed" | "failed"
+  quality?: string
+  taskIds?: string[]
 }
 
-export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
+export function HistoryItem({ id, prompt, images, status, quality, taskIds = [] }: HistoryItemProps) {
   const removeHistoryItem = useGenerationStore((state) => state.removeHistoryItem)
 
   return (
     <div className="space-y-3">
-      <div className="flex items-start justify-between gap-4">
-        <p className="text-sm font-medium leading-tight text-foreground/90 line-clamp-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <p className="text-sm font-medium leading-tight text-foreground/90 line-clamp-2 sm:flex-1">
           {prompt}
         </p>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <Button size="sm" className="h-8 gap-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-semibold shadow-none">
-            Download
-            <Download className="w-3.5 h-3.5" />
-          </Button>
+        <div className="flex shrink-0 items-center gap-1.5 self-end sm:self-start">
+          <ImageExportMenu
+            images={images}
+            filenamePrefix={`pixii-${prompt || id}`}
+            label="Download"
+            ariaLabel="Download generation images"
+            size="sm"
+            triggerClassName="h-8 gap-1.5 rounded-lg bg-primary/10 text-xs font-semibold text-primary shadow-none hover:bg-primary/20"
+            errorClassName="max-w-44 text-[11px]"
+          />
           
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -66,15 +77,32 @@ export function HistoryItem({ id, prompt, images }: HistoryItemProps) {
           </AlertDialog>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-2">
-        {images.map((img, idx) => (
-          <div 
-            key={idx} 
-            className="aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
-          >
-            <img src={img} alt="" className="w-full h-full object-cover" />
-          </div>
-        ))}
+      <div className="grid grid-cols-2 gap-2 xs:grid-cols-4">
+        {status === "pending" && images.length === 0 ? (
+          Array.from({ length: taskIds.length || 1 }).map((_, i) => (
+            <div 
+              key={i} 
+              className="relative aspect-square rounded-lg bg-muted animate-pulse border border-outline-variant/10 flex items-center justify-center"
+            >
+              <div className="w-6 h-6 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+            </div>
+          ))
+        ) : (
+          images.map((img) => (
+            <div 
+              key={img} 
+              className="relative aspect-square rounded-lg bg-muted overflow-hidden border border-outline-variant/10"
+            >
+              <Image 
+                src={getOptimizedCloudinaryUrl(img, 400, 400)} 
+                alt="" 
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 150px"
+                className="object-cover"
+              />
+            </div>
+          ))
+        )}
       </div>
     </div>
   )
