@@ -3,7 +3,9 @@ import { persist } from "zustand/middleware"
 import { 
   Generation, 
   ImageGenerationCount, 
-  OutputQuality 
+  OutputQuality,
+  AspectRatio,
+  Resolution 
 } from "@/lib/types"
 import { 
   getPersistedHistory, 
@@ -18,14 +20,27 @@ export interface GenerationState {
   outputQuality: OutputQuality
   uploadedImages: string[]
   selectedStyle: string | null
+  aspectRatio: AspectRatio
+  resolution: Resolution
   history: Generation[]
   
   setImageCount: (count: ImageGenerationCount) => void
   setOutputQuality: (quality: OutputQuality) => void
   setUploadedImages: (images: string[]) => void
   setSelectedStyle: (style: string | null) => void
+  setAspectRatio: (ratio: AspectRatio) => void
+  setResolution: (res: Resolution) => void
   
-  addGeneration: (prompt: string, images: string[], quality: OutputQuality, status?: "pending" | "completed", taskIds?: string[], id?: string) => void
+  addGeneration: (params: {
+    prompt: string, 
+    images: string[], 
+    quality: OutputQuality, 
+    aspectRatio: AspectRatio, 
+    resolution: Resolution,
+    status?: "pending" | "completed", 
+    taskIds?: string[], 
+    id?: string
+  }) => void
   removeHistoryItem: (id: string) => void
   clearHistory: () => void
   setGenerating: (isGenerating: boolean) => void
@@ -43,21 +58,27 @@ export const useGenerationStore = create<GenerationState>()(
       outputQuality: "Medium",
       uploadedImages: [],
       selectedStyle: null,
+      aspectRatio: "auto",
+      resolution: "1k",
       history: [],
 
       setImageCount: (imageCount) => set({ imageCount }),
       setOutputQuality: (outputQuality) => set({ outputQuality }),
       setUploadedImages: (uploadedImages) => set({ uploadedImages }),
       setSelectedStyle: (selectedStyle) => set({ selectedStyle }),
+      setAspectRatio: (aspectRatio) => set({ aspectRatio }),
+      setResolution: (resolution) => set({ resolution }),
       setGenerating: (isGenerating) => set({ isGenerating }),
       setCurrentGenerations: (currentGenerations) => set({ currentGenerations }),
 
-      addGeneration: (prompt, images, quality, status = "completed", taskIds, id) => {
+      addGeneration: ({ prompt, images, quality, aspectRatio, resolution, status = "completed", taskIds, id }) => {
         const newGeneration: Generation = {
           id: id || crypto.randomUUID(),
           prompt,
           images,
           quality,
+          aspectRatio,
+          resolution,
           createdAt: new Date().toISOString(),
           status,
           taskIds,
@@ -100,6 +121,8 @@ export const useGenerationStore = create<GenerationState>()(
         history: state.history,
         imageCount: state.imageCount,
         outputQuality: state.outputQuality,
+        aspectRatio: state.aspectRatio,
+        resolution: state.resolution,
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,
