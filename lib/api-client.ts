@@ -34,26 +34,35 @@ export class APIClient {
     return json.data
   }
 
-  static async generateImages(params: {
-    prompt: string
-    imageCount: ImageGenerationCount
-    outputQuality: OutputQuality
-    base64Images: string[]
-    selectedStyle: string | null
-    aspectRatio: AspectRatio
-    resolution: Resolution
-  }): Promise<{ images: { url?: string; taskId?: string }[] }> {
+  static async generateImages(
+    params: {
+      prompt: string
+      imageCount: ImageGenerationCount
+      outputQuality: OutputQuality
+      base64Images: string[]
+      selectedStyle: string | null
+      aspectRatio: AspectRatio
+      resolution: Resolution
+    },
+    options?: { signal?: AbortSignal }
+  ): Promise<{ images: { url?: string; taskId?: string }[] }> {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),
+      signal: options?.signal,
     })
 
     return this.handleResponse<{ images: { url?: string; taskId?: string }[] }>(response)
   }
 
-  static async getTaskStatus(taskId: string): Promise<{ state: string; url?: string }> {
-    const response = await fetch(`/api/status?taskId=${taskId}`)
+  static async getTaskStatus(
+    taskId: string,
+    options?: { signal?: AbortSignal }
+  ): Promise<{ state: string; url?: string }> {
+    const response = await fetch(`/api/status?taskId=${taskId}`, {
+      signal: options?.signal,
+    })
     return this.handleResponse<{ state: string; url?: string }>(response)
   }
 

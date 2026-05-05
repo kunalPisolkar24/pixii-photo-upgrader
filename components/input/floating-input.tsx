@@ -26,7 +26,7 @@ const SUGGESTIONS = Object.keys(STYLE_PACKS)
 export function FloatingInput() {
   const [prompt, setPrompt] = useState("")
   const [showQuotaAlert, setShowQuotaAlert] = useState(false)
-  const { generate } = useGenerationActions()
+  const { generate, cancelGeneration } = useGenerationActions()
   
   const {
     isGenerating,
@@ -107,6 +107,7 @@ export function FloatingInput() {
         value={prompt}
         onChange={setPrompt}
         onSubmit={handleSubmit}
+        onCancel={cancelGeneration}
         isGenerating={isGenerating}
         uploadedImages={uploadedImages}
         onImagesUpload={setUploadedImages}

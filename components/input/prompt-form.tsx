@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect } from "react"
-import { Paperclip, Send, X } from "lucide-react"
+import { Paperclip, Send, X, Square } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
@@ -17,6 +17,7 @@ interface PromptFormProps {
   isValid: boolean
   placeholder: string
   disabled?: boolean
+  onCancel?: () => void
 }
 
 export function PromptForm({ 
@@ -28,7 +29,8 @@ export function PromptForm({
   onImagesUpload,
   isValid,
   placeholder,
-  disabled 
+  disabled,
+  onCancel
 }: PromptFormProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -153,19 +155,30 @@ export function PromptForm({
           )}
         </div>
 
-        <Button 
-          type="submit" 
-          size="icon" 
-          className={cn(
-            "rounded-full shrink-0 w-10 h-10 sm:w-11 sm:h-11 transition-all duration-300",
-            (!isValid || isGenerating || disabled) 
-              ? "bg-muted text-muted-foreground opacity-50 shadow-none cursor-not-allowed" 
-              : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-90"
-          )}
-          disabled={!isValid || isGenerating || disabled}
-        >
-          <Send className="w-5 h-5" />
-        </Button>
+        {isGenerating ? (
+          <Button 
+            type="button" 
+            size="icon" 
+            onClick={onCancel}
+            className="rounded-full shrink-0 w-10 h-10 sm:w-11 sm:h-11 transition-all duration-300 bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg shadow-destructive/20 active:scale-90"
+          >
+            <Square className="w-4 h-4 fill-current" />
+          </Button>
+        ) : (
+          <Button 
+            type="submit" 
+            size="icon" 
+            className={cn(
+              "rounded-full shrink-0 w-10 h-10 sm:w-11 sm:h-11 transition-all duration-300",
+              (!isValid || disabled) 
+                ? "bg-muted text-muted-foreground opacity-50 shadow-none cursor-not-allowed" 
+                : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-90"
+            )}
+            disabled={!isValid || disabled}
+          >
+            <Send className="w-5 h-5" />
+          </Button>
+        )}
       </div>
     </form>
   )
